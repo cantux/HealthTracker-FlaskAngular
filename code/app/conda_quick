@@ -1,0 +1,23 @@
+# Conda Intro & Usage
+
+## Intro
+
+### Why anaconda? 
+* I would like to be able to manage, clone, share, replenish my development environment. We got npm for js what is the python equivalent?
+* Conda is the concatanation of virtualenv and pip. See: http://conda.pydata.org/docs/_downloads/conda-pip-virtualenv-translator.html
+* Ultimate goal is to be able to use Docker. We will be using miniconda with docker.
+
+### Install Anaconda following the docs:
+* [Install Anaconda Following the Docs](https://docs.continuum.io/anaconda/install)
+* !!make sure to export anaconda2 installation folder to your PATH environment variable
+
+[See Miniconda vs Anaconda](### Miniconda vs Anaconda)
+
+## Quick Usage For This Project
+
+    conda env create --file backend.env.yml
+    source activate swe573_backend
+
+## Anaconda Bits
+
+[See My Notes](https://github.com/cantux/anaconda_quick/blob/master/README.md)
