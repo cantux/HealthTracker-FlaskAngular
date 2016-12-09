@@ -1,10 +1,10 @@
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home';
 import { AboutComponent } from './about';
+
+import { UserComponent } from './user';
+import { UserResolver } from './user/user.resolver.service'
 import { NoContentComponent } from './no-content';
-
-import { DataResolver } from './app.resolver';
-
 
 export const ROUTES: Routes = [
   { path: '',      component: HomeComponent },
@@ -13,6 +13,12 @@ export const ROUTES: Routes = [
   {
     path: 'detail', loadChildren: () => System.import('./+detail')
       .then((comp: any) => comp.default),
+  },
+  { path: 'user/:id',
+    component: UserComponent,
+    resolve: {
+      userDetail: UserResolver
+    }
   },
   { path: '**',    component: NoContentComponent },
 ];
