@@ -1,0 +1,16 @@
+Food Component
+<p-autoComplete
+  [(ngModel)]="foodSearchQuery"
+  [suggestions]="foodSearchResults"
+  (completeMethod)="foodSearch($event)"
+  delay="700"
+  placeholder="Type to select food"
+  styleClass="wid100"
+  >
+  <template let-foodSearchQuery>
+    <div class="ui-helper-clearfix" style="border-bottom:1px solid #D5D5D5">
+      <div style="font-size:18px;float:right;margin:10px 10px 0 0">{{foodSearchQuery}}</div>
+    </div>
+  </template>
+
+</p-autoComplete>

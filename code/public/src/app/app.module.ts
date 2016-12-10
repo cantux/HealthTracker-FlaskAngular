@@ -13,9 +13,6 @@ import { ROUTES } from './app.routes';
 // App is our top level component
 import { AppComponent } from './app.component';
 
-import { USER_RESOLVER_PROVIDERS } from './user/user.resolver.service';
-import { UserDetailService } from './user/user.detail.service';
-
 import { AppState, InternalStateType } from './app.service';
 
 import { HomeComponent } from './home';
@@ -24,20 +21,11 @@ import { NoContentComponent } from './no-content';
 import { XLarge } from './home/x-large';
 
 import { AccessModule } from './access';
-import { UserComponent } from './user'
-
-// temp zone
-import { WeightComponent } from './user/weight'
-import { WeightService } from './user/weight/weight.service'
-
-import { CalendarModule } from 'primeng/components/calendar/calendar';
+import { UserModule } from './user'
 
 // Application wide providers
 const APP_PROVIDERS = [
-  ...USER_RESOLVER_PROVIDERS,
-  UserDetailService,
   AppState,
-  WeightService
 ];
 
 type StoreType = {
@@ -56,9 +44,7 @@ type StoreType = {
     AboutComponent,
     HomeComponent,
     NoContentComponent,
-    XLarge,
-    UserComponent,
-    WeightComponent
+    XLarge
   ],
   imports: [ // import Angular's modules
     BrowserModule,
@@ -66,7 +52,7 @@ type StoreType = {
     HttpModule,
     RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
     AccessModule,
-    CalendarModule
+    UserModule
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

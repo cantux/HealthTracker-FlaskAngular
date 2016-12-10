@@ -1,7 +1,7 @@
 /**
- * Created by cant on 12/7/16.
+ * Created by cant on 12/10/16.
  */
-import { Injectable } from '@angular/core'
+import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
@@ -12,26 +12,27 @@ import 'rxjs/add/observable/throw';
 // Operators
 import 'rxjs/add/operator/catch';
 
-@Injectable()
-export class UserDetailService {
+import 'rxjs/add/operator/map';
 
-  private backendUrl = 'http://127.0.0.1:5000/api/user/';
+@Injectable()
+export class FoodSuggestionService {
+
+  private backendUrl = 'http://127.0.0.1:5000/api/food/';
 
   constructor (private http: Http) {}
 
-  public getDetails(id) : Observable<Response> {
-    console.log('get user detail serv');
-    return this.http.get(this.backendUrl + id)
-      .map(this.onUserDetailReceived)
-      .catch(this.handleUserDetailError);
+  public getNDBFoodSuggestion(search_string) : Observable<Response> {
+    console.log('get foods serv');
+    return this.http.get(this.backendUrl + search_string)
+      .map(this.onNDBFoodSuggestionReceived)
+      .catch(this.handleError);
   }
-
-  private onUserDetailReceived(res: Response) {
+  private onNDBFoodSuggestionReceived(res: Response) {
     let body = res.json();
-    return body;
+    return body.map(x => x["name"]);
   }
 
-  private handleUserDetailError(error: Response) {
+  private handleError(error: Response) {
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';
@@ -43,5 +44,6 @@ export class UserDetailService {
     console.error(errMsg);
     return Observable.throw(errMsg);
   }
+
 
 }

@@ -2,6 +2,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 import { AppState } from './app.service';
 
+import * as primengCSS from 'primeng/resources/primeng.css';
+
 /*
  * App Component
  * Top Level Component
@@ -10,7 +12,8 @@ import { AppState } from './app.service';
   selector: 'app',
   encapsulation: ViewEncapsulation.None,
   styleUrls: [
-    './app.component.css'
+    './app.component.css',
+    primengCSS
   ],
   template: `
     <nav>
