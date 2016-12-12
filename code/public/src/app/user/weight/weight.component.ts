@@ -29,7 +29,9 @@ export class WeightComponent {
     this.routeSubscription = this.route.params.subscribe(params => {
       this.userId = params['id']; // (+) converts string 'id' to a number
 
-      this.weightService.getWeights(this.userId, this.toIsoString(this.startDate), this.toIsoString(this.endDate))
+      this.weightService.getWeights(this.userId,
+                                    this.toIsoString(this.startDate),
+                                    this.toIsoString(this.endDate))
         .subscribe(res => {
             console.log('weight component, service response: ', res);
           },

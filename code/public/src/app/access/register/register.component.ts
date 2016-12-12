@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
   templateUrl: './register.component.html'
 })
 export class RegisterComponent {
-  someText = 'register component text';
+  someText = 'register component not implemented';
 
   constructor() {
     console.log('register component constr');
