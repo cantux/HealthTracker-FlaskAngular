@@ -16,7 +16,7 @@ import { Credential } from '../_models/Credential';
 
 @Injectable()
 export class AuthService {
-  private backendUrl = 'http://127.0.0.1:5000/api/auth';
+  private backendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth';
 
   constructor (private http: Http) {}
 

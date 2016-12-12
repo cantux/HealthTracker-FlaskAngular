@@ -283,22 +283,22 @@ class Consumption(db.Model):
 
 
 if __name__ == '__main__':
-    db.create_all()
-    first_user = User("email", "pass")
-    db.session.add(first_user)
-    db.session.commit()
-    all_users = User.query.all()
-    one_user = User.query.filter_by(Id=1).first()
-    for elem in all_users:
-        print 'all: ' + elem.to_string()
-
-    weight1 = Weight(one_user.Id, 77, datetime.utcnow())
-    weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
-    db.session.add(weight1)
-    db.session.add(weight2)
-    one_user.Weights.append(weight1)
-    one_user.Weights.append(weight2)
-    db.session.commit()
+    # db.create_all()
+    # first_user = User("email", "pass")
+    # db.session.add(first_user)
+    # db.session.commit()
+    # all_users = User.query.all()
+    # one_user = User.query.filter_by(Id=1).first()
+    # for elem in all_users:
+    #     print 'all: ' + elem.to_string()
+    #
+    # weight1 = Weight(one_user.Id, 77, datetime.utcnow())
+    # weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
+    # db.session.add(weight1)
+    # db.session.add(weight2)
+    # one_user.Weights.append(weight1)
+    # one_user.Weights.append(weight2)
+    # db.session.commit()
 
 
     # weight_user = User.query.filter_by(Id=1).first()
