@@ -1,8 +1,16 @@
 User Component Html
 
+<p-calendar [(ngModel)]="selectedDate"
+            [showIcon]="true" dateFormat="dd-mm-yy"
+            [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030"
+            (onSelect)="onDateSelected()">
+
+</p-calendar>
+
 <div class="ui-grid ui-grid-responsive ui-fluid">
-  <weight class="ui-grid-col-6"></weight>
-  <food class="ui-grid-col-6"></food>
+  <food class="ui-g-12 ui-md-4" [masterDateString]="selectedDateString"></food>
+  <exercise class="ui-g-12 ui-md-4" [masterDateString]="selectedDateString"></exercise>
+  <weight class="ui-g-12 ui-md-4" [masterDateString]="selectedDateString"></weight>
 </div>
 
 

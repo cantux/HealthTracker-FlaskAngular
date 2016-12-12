@@ -12,11 +12,17 @@ import 'rxjs/add/observable/throw';
 // Operators
 import 'rxjs/add/operator/catch';
 
+import { Credential } from '../_models/Credential';
+
 @Injectable()
 export class AuthService {
   private backendUrl = 'http://127.0.0.1:5000/api/auth';
 
   constructor (private http: Http) {}
+
+  public credentialObs: Observable<Credential>;
+
+  public credential: Credential;
 
   public login(user) : Observable<Response> {
     console.log('authServ login');
@@ -27,6 +33,14 @@ export class AuthService {
 
   private verifyLogin(res: Response) {
     let body = res.json();
+
+    this.credential = new Credential(body.email, body.id);
+
+    console.log(JSON.stringify(this.credential))
+
+    this.credentialObs = new Observable<Credential>(
+      observer => { observer.next(this.credential) });
+
     return body;
   }
 

@@ -1,7 +1,7 @@
 /**
  * Created by cant on 12/9/16.
  */
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { WeightService } from './weight.service'
@@ -45,6 +45,14 @@ export class WeightComponent {
     this.routeSubscription.unsubscribe();
   }
 
+  selectedDate: string;
+
+  @Input()
+  set masterDateString(masterDateString: string) {
+    console.log('food component date selected: ', masterDateString);
+    this.selectedDate = masterDateString || 'no date selected';
+  }
+
   toIsoString(date) {
     function pad(number) {
       if (number < 10) {
@@ -59,11 +67,13 @@ export class WeightComponent {
 
   onDateSelected() {
     console.log('weight component date selected');
-    this.weightService.getWeights(this.userId, this.toIsoString(this.startDate), this.toIsoString(this.endDate))        .subscribe(res => {
-        console.log('weight component, service response: ', res);
-      },
-      err => {
-        console.log('weight component, service error: ', err);
-      })
+    this.weightService.getWeights(this.userId, this.toIsoString(this.startDate), this.toIsoString(this.endDate))
+      .subscribe(
+        res => {
+          console.log('weight component, service response: ', res);
+        },
+        err => {
+          console.log('weight component, service error: ', err);
+        })
   }
 }

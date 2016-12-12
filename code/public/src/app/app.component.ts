@@ -3,7 +3,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { AppState } from './app.service';
 
 import * as primengCSS from 'primeng/resources/primeng.css';
-import * as primeUITheme from 'primeui/themes/vader/theme.css'
+import * as primeUITheme from 'primeui/themes/bootstrap/theme.css'
 /*
  * App Component
  * Top Level Component

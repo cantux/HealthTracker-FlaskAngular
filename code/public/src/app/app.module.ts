@@ -23,9 +23,12 @@ import { XLarge } from './home/x-large';
 import { AccessModule } from './access';
 import { UserModule } from './user'
 
+import { AuthService } from './access/auth.service';
+
 // Application wide providers
 const APP_PROVIDERS = [
   AppState,
+  AuthService
 ];
 
 type StoreType = {

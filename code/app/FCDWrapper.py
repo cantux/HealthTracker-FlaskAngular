@@ -60,8 +60,7 @@ class FCD(object):
                     filtered.append({
                         "label": nutrient["name"],
                         "unit": nutrient["unit"],
-                        "value": float(i_measure["value"]),
-                        "eqv": i_measure["eqv"]
+                        "value": float(i_measure["value"])
                     })
         return filtered
 
@@ -77,14 +76,14 @@ class FCD(object):
         for m in nutrients[0]["measures"]:
             measures.append(m)
         return measures
-
-    @staticmethod
-    def fill_measures(nutrients):
-        measures = []
-        for n in nutrients:
-            for m in n["measures"]:
-                measures.append(m)
-        return measures
+    #
+    # @staticmethod
+    # def fill_measures(nutrients):
+    #     measures = []
+    #     for n in nutrients:
+    #         for m in n["measures"]:
+    #             measures.append(m)
+    #     return measures
 
     @staticmethod
     def filter_sum_nutrients(nutrients, label, unit):

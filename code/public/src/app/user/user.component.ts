@@ -9,8 +9,13 @@ import { Router, ActivatedRoute } from '@angular/router';
   templateUrl: './user.component.html'
 })
 export class UserComponent {
+
+  selectedDateString: string;
+  selectedDate: Date = new Date();
+
   constructor (private router: Router, private route: ActivatedRoute) {
     console.log('user component constr');
+    this.selectedDateString = this.toIsoString(this.selectedDate);
   }
 
   ngOnInit () {
@@ -20,5 +25,22 @@ export class UserComponent {
         console.log('user component user detail recieved: ', data.userDetail);
       }
     );
+  }
+
+  toIsoString(date) {
+    function pad(number) {
+      if (number < 10) {
+        return '0' + number;
+      }
+      return number;
+    }
+    return date.getUTCFullYear() +
+      '-' + pad(date.getUTCMonth() + 1) +
+      '-' + pad(date.getUTCDate())
+  }
+
+  onDateSelected() {
+    console.log('user component date selected');
+    this.selectedDateString = this.toIsoString(this.selectedDate);
   }
 }

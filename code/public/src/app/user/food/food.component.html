@@ -2,24 +2,26 @@ Food Component
 <p-dataList [value]="foods" [paginator]="true" [rows]="5">
   <header>
     List of Foods
-    <p-calendar [(ngModel)]="selectedDate"
-                [showIcon]="true" dateFormat="dd-mm-yy"
-                [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030"
-                (onSelect)="onDateSelected()">
-
-    </p-calendar>
   </header>
   <template let-food>
     <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:14px;padding:20px;border-bottom:1px solid #D5D5D5;">
       <div class="ui-grid-row">
         <div class="ui-grid ui-grid-responsive ui-fluid">
           <div class="ui-grid-row">
-            <div class="ui-grid-col-2">Name</div>
-            <div class="ui-grid-col-10">{{food.Name}}</div>
+            <div class="ui-grid-col-4">Name:   </div>
+            <div class="ui-grid-col-8">{{food.Name}}</div>
           </div>
           <div class="ui-grid-row">
-            <div class="ui-grid-col-2">NDBNO </div>
-            <div class="ui-grid-col-10">{{food.NdbNumber}}</div>
+            <div class="ui-grid-col-4">NDBNO:   </div>
+            <div class="ui-grid-col-8">{{food.NdbNumber}}</div>
+          </div>
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-4">Measure:    </div>
+            <div class="ui-grid-col-8">{{food.MeasureLabel}}</div>
+          </div>
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-4">Quantity    </div>
+            <div class="ui-grid-col-8">{{food.Quantity}}</div>
           </div>
         </div>
       </div>
@@ -49,12 +51,17 @@ Food Component
         [options]="foodMeasures"
         [(ngModel)]="selectedMeasureLabel"
         required="true"
+        [style]="{'width':'60px'}"
       ></p-dropdown>
 
       <input type="text" pInputText
              [(ngModel)]="quantityInputText"
 
       />
+
+      <button pButton type="button" label="Add"
+              (click)="onFoodAddButtonClicked()">
+      </button>
     </div>
   </footer>
 </p-dataList>

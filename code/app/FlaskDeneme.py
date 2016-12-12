@@ -8,9 +8,11 @@ from flask_sqlalchemy import get_debug_queries
 from datetime import datetime
 from datetime import timedelta
 
-import requests
-
 from FCDWrapper import FCD
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 app = Flask(__name__)
 
@@ -39,7 +41,7 @@ def sql_debug(response):
 
     return response
 
-app.after_request(sql_debug)
+# app.after_request(sql_debug)
 
 
 @app.route('/')
@@ -87,7 +89,7 @@ def login():
     if user:
         password = request.json['password']
         if user.Password == password:
-            return make_response(jsonify({"id": user.Id}))
+            return make_response(jsonify({"id": user.Id, "email": user.Email}))
     return make_response('email or password didnt match', 403)
 
 
@@ -158,24 +160,6 @@ def get_measures(ndbno):
     return make_response(jsonify(FCD.get_measures_frontend(ndbno)))
 
 
-# Create Food
-@app.route('/api/food/new', methods=['POST'])
-def create_new_food(user_id):
-    new_food = Food(UserId=user_id, Name=request.json["Name"])
-    db.session.add(new_food)
-
-    # for loops
-    nutrients = request.json["Nutrients"]
-    for nutrient in nutrients:
-        new_nutrient = Nutrient(FoodId=new_food.Id, Name=nutrient["Name"], Unit=nutrient["Unit"])
-        db.session.add(new_nutrient)
-        for measure in nutrients["Measures"]:
-            new_measure = Measure(FoodId=new_food.Id, NutrientId=new_nutrient.Id, Label=measure["Label"], Value=measure["Value"])
-            db.session.add(new_measure)
-
-    db.session.commit()
-
-
 # Add food from NDB to Consumption
 @app.route('/api/user/<int:user_id>/food/new', methods=['POST'])
 def create_ndb_food(user_id):
@@ -191,163 +175,109 @@ def create_ndb_food(user_id):
         print "ndbnumber not provided not implemented"
         return make_response('', 400);
 
-    # if ndbnumber hasn't been used before we fill our database
-    elif Food.query.filter_by(NDBNO=ndbnumber).first() is None:
-        nutrients = FCD.get_nutrients(ndbnumber)
-        measures = FCD.get_measures(nutrients, selected_measure_label)
+    nutrients = FCD.get_nutrients(ndbnumber)
+    measures = FCD.get_measures(nutrients, selected_measure_label)
+    new_food = Food(UserId=user_id,
+                    Name=food_name,
+                    NDBNO=ndbnumber,
+                    Date=consumption_date,
+                    Label=selected_measure_label,
+                    Quantity=quantity)
 
-        print "measures length: " + str(len(measures))
-        new_food = Food(UserId=user_id, Name=food_name, NDBNO=ndbnumber)
-        db.session.add(new_food)
-        db.session.flush()
-        db.session.refresh(new_food)
-        # for loops
-        measures_count = 0
-        nutrients_count = 0
-        for nutrient in nutrients:
-            nutrients_count += 1
-            new_nutrient = Nutrient(FoodId=new_food.Id, Name=nutrient["name"], Unit=nutrient["unit"])
-            db.session.add(new_nutrient)
-            db.session.flush()
-            db.session.refresh(new_nutrient)
-            for measure in nutrient["measures"]:
-                measures_count += 1
-                new_measure = Measure(FoodId=new_food.Id, NutrientId=new_nutrient.Id, Label=measure["label"],
-                                      Value=measure["value"], Eqv=measure["eqv"])
-                db.session.add(new_measure)
+    db.session.add(new_food)
+    db.session.flush()
+    db.session.refresh(new_food)
 
-        print 'nutrients_count: ' + str(nutrients_count)
-        print 'measures_count: ' + str(nutrients_count)
-        db.session.commit()
-
-    existing_ndb_food = Food.query.filter_by(NDBNO=ndbnumber).first()
-    existing_nutrients = existing_ndb_food.Nutrients.all()
-
-
-    # selected_measures = existing_nutrients.Measures \
-    #     .filter_by(Label=selected_measure_label) \
-    #     .all()
-
-    # fuzzy_join = db.session.query(existing_nutrients) \
-    #     .join(existing_nutrients.Measures) \
-    #     .filter(Measure.Label == selected_measure_label).all()
-
-    db.session.query(Nutrient).join(Measure).filter(Measure.Label==selected_measure_label)
-    db.session.query(existing_ndb_food.Nutrients).join(existing_ndb_food.Nutrients).filter_by(Label=selected_measures)
-    # sanity check
-    if existing_nutrients.count() != selected_measures.count():
-        return make_response('nutrients and selected measures count doesnt hold up', 500)
-
-    for m in selected_measures:
+    for m in measures:
         new_consumption = Consumption(UserId=user_id,
-                                      FoodId=existing_ndb_food.Id,
-                                      NutrientId=existing_nutrients.Id,
-                                      MeasureId=m.Id,
+                                      FoodId=new_food.Id,
+                                      Label=m["label"],
+                                      Unit=m["unit"],
+                                      Value=m["value"],
                                       Date=consumption_date,
-                                      Quantity=quantity)
+                                      Quantity=quantity,
+                                      Total=quantity*m["value"])
         db.session.add(new_consumption)
     db.session.commit()
-    return make_response(jsonify(existing_ndb_food))
-
+    food_response = new_food.serialize()
+    food_response.update({'Quantity': quantity})
+    return make_response(jsonify(food_response))
 
 
 # Get List of Foods for given dates
-# @app.route('/api/user/<int:user_id>/food/<date>', methods=['GET'])
+@app.route('/api/user/<int:user_id>/food/<date>', methods=['GET'])
 def list_food_of_given_date(user_id, date):
     requested_date = datetime.strptime(date, "%Y-%m-%d").date()
 
     # get food ids of consumptions on given date
-    food_ids = Consumption.query(Consumption.FoodId)\
-        .filter_by(UserId=user_id, Date=requested_date)\
-        .distinct(Consumption.FoodId)\
+    foods = Food.query.filter_by(UserId=user_id, Date=requested_date).all()
+
+    return make_response(jsonify([f.serialize() for f in foods]))
+
+
+# Get Food list for date intervals
+@app.route('/api/user/<int:user_id>/consumption/energy/<start_date>/<end_date>', methods=['GET'])
+def query_consumption_between_dates(user_id, start_date, end_date):
+    date_start = datetime.strptime(start_date, "%Y-%m-%d").date()
+    date_end = datetime.strptime(end_date, "%Y-%m-%d").date()
+    print 'query_consumption_between_dates converted start: ' + str(date_start) + ' end: ' + str(date_end)
+
+    energy_list = Consumption.query\
+        .filter_by(UserId=user_id)\
+        .filter_by(Label = 'Energy')\
+        .filter_by(Unit = 'kcal')\
+        .filter(db.between(Consumption.Date, date_start, date_end))\
         .all()
 
-    return make_response(jsonify(Food.query().join(food_ids).all()))
-
-
-# Create consumption for current date
-@app.route('/api/user/<int:user_id>/consumption/<date>', methods=['POST'])
-def add_consumption(user_id, date):
-    food = Food.query().filter_by(Id=request.json["FoodId"]).first()
-
-    measures = food.Measures.filter_by(Label=request.json["MeasureLabel"])
-
-    requested_date = datetime.strptime(date, "%Y-%m-%d").date()
-
-    requested_quantity = request.json["Quantity"]
-
-    for nutrient in food.Nutrients.all():
-        for measure in measures:
-            new_consumption = Consumption(UserId=user_id,
-                                          FoodId=food.Id,
-                                          NutrientId=nutrient.Id,
-                                          MeasureId=measure.Id,
-                                          Date=requested_date,
-                                          Quantity=requested_quantity)
-            db.session.add(new_consumption)
-    db.session.commit()
+    return make_response(jsonify(energy_list))
 
 
 # Get consumption on given date
 @app.route('/api/user/<int:user_id>/consumption/<date>', methods=['GET'])
 def list_consumption_of_given_date(user_id, date):
     requested_date = datetime.strptime(date, "%Y-%m-%d").date()
-    return make_response(jsonify(Consumption.query().filter_by(UserId=user_id, Date=requested_date).all()))
-
-
-# Get Consumption list for date intervals
-@app.route('/api/user/<int:user_id>/consumption/<start_date>/<end_date>', methods=['GET'])
-def query_consumption_between_dates(user_id, start_date, end_date):
-    date_start = datetime.strptime(start_date, "%Y-%m-%d").date()
-    date_end = datetime.strptime(end_date, "%Y-%m-%d").date()
-    print 'query_consumption_between_dates converted start: ' + str(date_start) + ' end: ' + str(date_end)
-    return make_response(jsonify(Consumption.query()\
-        .filter_by(UserId=user_id)\
-        .filter(db.between(Weight.Date, date_start, date_end))\
-        .all()))
+    return make_response(jsonify(Consumption.query.filter_by(UserId=user_id, Date=requested_date).all()))
 
 
 class Food(db.Model):
     __tablename__ = 'Food'
     Id = db.Column('Id', db.Integer, primary_key=True, autoincrement=True, unique=True)
     UserId = db.Column('UserId', db.INT, db.ForeignKey('User.Id'))
+    Consumptions = db.relationship('Consumption', lazy="dynamic")
     Name = db.Column('Name', db.Unicode(200))
     NDBNO = db.Column('NDBNO', db.Unicode(20))
-    Nutrients = db.relationship('Nutrient', lazy="dynamic")
-    Measures = db.relationship('Measure', lazy="dynamic")
-    Consumptions = db.relationship('Consumption', lazy="dynamic")
+    Date = db.Column('Date', db.DATETIME)
+    Label = db.Column('Label', db.Unicode(40))
+    Quantity = db.Column('Quantity', db.FLOAT)
 
+    def serialize(self):
+        return {
+            "Name": self.Name,
+            "MeasureLabel": self.Label,
+            "NdbNumber": self.NDBNO,
+            "Quantity": self.Quantity,
+            "Date": self.Date.isoformat()
 
-class Nutrient(db.Model):
-    __tablename__ = 'Nutrient'
-    Id = db.Column('Id', db.Integer, primary_key=True, autoincrement=True, unique=True)
-    FoodId = db.Column('FoodId', db.INT, db.ForeignKey('Food.Id'))
-    Name = db.Column('Name', db.Unicode(25))
-    Unit = db.Column('Unit', db.Unicode(25))
-    Measures = db.relationship('Measure', lazy="dynamic")
-    Consumptions = db.relationship('Consumption', lazy="dynamic")
-
-
-class Measure(db.Model):
-    __tablename__ = 'Measure'
-    Id = db.Column('Id', db.Integer, primary_key=True, autoincrement=True, unique=True)
-    FoodId = db.Column('FoodId', db.INT, db.ForeignKey('Food.Id'))
-    NutrientId = db.Column('NutrientId', db.INT, db.ForeignKey('Nutrient.Id'))
-    Label = db.Column('Label', db.Unicode(25))
-    Value = db.Column('Value', db.FLOAT)
-    Eqv = db.Column('Eqv', db.FLOAT)
-    Consumptions = db.relationship('Consumption', lazy="dynamic")
-
+        }
 
 class Consumption(db.Model):
     __tablename__ = 'Consumption'
     Id = db.Column('Id', db.Integer, primary_key=True, autoincrement=True, unique=True)
     UserId = db.Column('UserId', db.INT, db.ForeignKey('User.Id'))
     FoodId = db.Column('FoodId', db.INT, db.ForeignKey('Food.Id'))
-    NutrientId = db.Column('NutrientId', db.INT, db.ForeignKey('Nutrient.Id'))
-    MeasureId = db.Column('MeasureId', db.INT, db.ForeignKey('Measure.Id'))
+    Label = db.Column('Label', db.Unicode(40))
+    Unit = db.Column('Unit', db.Unicode(10))
+    Value = db.Column('Value', db.FLOAT)
     Date = db.Column('Date', db.DATETIME)
     Quantity = db.Column('Quantity', db.FLOAT)
+    Total = db.Column('Total', db.FLOAT)
+
+    def serialize(self):
+        return {
+            "Label": self.Label,
+            "Date": self.Date.date,
+            "Total": self.Total
+        }
 
 # endregion
 
