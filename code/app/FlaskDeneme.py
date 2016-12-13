@@ -115,7 +115,7 @@ class User(db.Model):
     Height = db.Column('Height', db.Integer)
     Weights = db.relationship('Weight', lazy="dynamic")
     # goalWeights
-    # exercis
+    Activities = db.relationship('Activity', lazy="dynamic")
     Foods = db.relationship('Food', lazy="dynamic")
     Consumptions = db.relationship('Consumption', lazy="dynamic")
 
