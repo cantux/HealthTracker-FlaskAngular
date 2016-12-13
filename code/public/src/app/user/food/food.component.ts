@@ -27,6 +27,7 @@ export class FoodComponent implements OnInit {
 
   private routeSubscription;
   private userId;
+
   constructor(private foodSuggestionService: FoodSuggestionService,
               private foodProviderService: FoodProviderService,
               private consumptionService: ConsumptionService,
@@ -40,6 +41,7 @@ export class FoodComponent implements OnInit {
     this.routeSubscription = this.route.params.subscribe(params => {
       this.userId = params['id']; // (+) converts string 'id' to a number
       console.log('route subs userid: ', this.userId);
+
       this.foodProviderService.getFoods(this.userId, this.selectedDate).subscribe(
         x => {
           console.log('foods received: ', JSON.stringify(x));
@@ -47,10 +49,6 @@ export class FoodComponent implements OnInit {
         }
       )
     });
-    //
-    // this.authService.credentialObs.subscribe(
-    //   cred => console.log('food component cred: ', JSON.stringify(cred))
-    // )
   }
 
   ngOnDestroy() {
@@ -63,15 +61,18 @@ export class FoodComponent implements OnInit {
   set masterDateString(masterDateString: string) {
     console.log('food component date selected: ', masterDateString);
     this.selectedDate = masterDateString || 'no date selected';
+    if(this.userId)
+    {
+      this.foodProviderService.getFoods(this.userId, this.selectedDate).subscribe(
+        x => {
+          console.log('foods received on date change: ', JSON.stringify(x));
+          this.foods = x;
+        });
+    }
   }
 
   // datalist
   foods: NdbFood[] = [];
-
-  // food search autocomplete
-  foodSearchQuery: string;
-  foodNameSearchResults: string[];
-  foodSearchResults: NdbFood[];
 
   // measures
   foodMeasures: SelectItem[];
@@ -79,11 +80,15 @@ export class FoodComponent implements OnInit {
 
   // quantity input text
   quantityInputText: string;
-  quantityInputDisabled: boolean = false;
 
   // consume
   selectedFoodName: string;
   selectedFoodNdbNumber: string;
+
+  // food search autocomplete
+  foodSearchQuery: string;
+  foodNameSearchResults: string[];
+  foodSearchResults: NdbFood[];
 
   foodSearch(event) {
     this.foodNameSearchResults = ['Loading...'];
@@ -101,7 +106,7 @@ export class FoodComponent implements OnInit {
 
   onFoodSelected(value) {
     this.foodMeasures = <SelectItem[]>[{ label:'Loading..', value:''}];
-    Observable.from(this.foodSearchResults).find(function(item) {
+    Observable.from(this.foodSearchResults).find(item => {
       return item.Name === value;
     }).subscribe(
       result => {
@@ -126,10 +131,9 @@ export class FoodComponent implements OnInit {
       this.selectedFoodNdbNumber,
       +(this.quantityInputText),
       this.selectedDate);
-
+    this.foods.unshift(new_food);
     this.consumptionService.consumeFood(this.userId, new_food).subscribe(
       x => {
-        this.foods.unshift(x);
         console.log('food component consumed food name: ', x);
       });
   }

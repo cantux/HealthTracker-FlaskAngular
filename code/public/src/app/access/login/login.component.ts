@@ -14,7 +14,9 @@ import { User } from '../../_models/User';
   providers: [ AuthService ]
 })
 export class LoginComponent {
+
   user: User = new User('','');
+
   constructor(private authService: AuthService, private router: Router) {
     console.log('login comp constr');
   }

@@ -16,7 +16,9 @@ import { Credential } from '../_models/Credential';
 
 @Injectable()
 export class AuthService {
-  private backendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth';
+  private loginUrl = 'http://127.0.0.1:5000/api/auth';
+
+  private registerUrl = 'http://127.0.0.1:5000/api/auth/new';
 
   constructor (private http: Http) {}
 
@@ -26,12 +28,32 @@ export class AuthService {
 
   public login(user) : Observable<Response> {
     console.log('authServ login');
-    return this.http.post(this.backendUrl, user)
+    return this.http.post(this.loginUrl, user)
       .map(this.verifyLogin)
       .catch(this.handleLoginError);
   }
 
   private verifyLogin(res: Response) {
+    let body = res.json();
+
+    this.credential = new Credential(body.email, body.id);
+
+    console.log(JSON.stringify(this.credential))
+
+    this.credentialObs = new Observable<Credential>(
+      observer => { observer.next(this.credential) });
+
+    return body;
+  }
+
+  public register(user) : Observable<Response> {
+    console.log('authServ register');
+    return this.http.post(this.registerUrl, user)
+      .map(this.verifyRegister)
+      .catch(this.handleLoginError);
+  }
+
+  private verifyRegister(res: Response) {
     let body = res.json();
 
     this.credential = new Credential(body.email, body.id);

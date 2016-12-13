@@ -20,7 +20,9 @@ import { FoodSuggestionService } from './food/food.suggestion.service'
 import { FoodProviderService } from './food/food.provider.service'
 import { ConsumptionService  } from './food/consumption.service'
 
-import { ExerciseComponent } from './exercise'
+import { ActivityComponent } from './activity'
+import { ActivityService } from './activity/activity.service'
+
 import { WeightComponent } from './weight'
 import { WeightService } from './weight/weight.service'
 
@@ -30,7 +32,8 @@ const USER_PROVIDERS = [
   WeightService,
   FoodSuggestionService,
   FoodProviderService,
-  ConsumptionService
+  ConsumptionService,
+  ActivityService
 ];
 
 @NgModule({
@@ -48,7 +51,7 @@ const USER_PROVIDERS = [
     UserComponent,
     WeightComponent,
     FoodComponent,
-    ExerciseComponent
+    ActivityComponent
   ],
   bootstrap: [
     UserComponent ],

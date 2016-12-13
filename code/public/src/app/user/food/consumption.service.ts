@@ -21,7 +21,7 @@ import { Food } from '../../_models/Food';
 @Injectable()
 export class ConsumptionService {
 
-  private backendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/user/';
+  private backendUrl = 'http://127.0.0.1:5000/api/user/';
 
   private foodUrl = '/food/new';
 
@@ -42,7 +42,7 @@ export class ConsumptionService {
 
   private onConsumedRegistered(res: Response) {
     let body = res.json();
-    return body;
+    return new Food(body["Name"], body["MeasureLabel"], body["NdbNumber"], body["Quantity"], body["Date"]);
   }
 
   private handleError(error: Response) {
@@ -54,6 +54,7 @@ export class ConsumptionService {
     } else {
       errMsg = JSON.stringify(error);
     }
+
     console.error(errMsg);
     return Observable.throw(errMsg);
   }

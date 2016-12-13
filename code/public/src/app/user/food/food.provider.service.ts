@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -19,17 +19,17 @@ import { Food } from '../../_models/Food';
 @Injectable()
 export class FoodProviderService {
 
-  private measuresBackendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/food/';
+  private measuresBackendUrl = 'http://127.0.0.1:5000/api/food/';
   private measuresUrl = '/measures';
 
-  private foodBackendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/user/';
+  private foodBackendUrl = 'http://127.0.0.1:5000/api/user/';
   private getSelectedDateFoodUrl = '/food/'
 
   constructor (private http: Http) {}
 
-  public getFoods(user_id, date): Observable<Food[]> {
+  public getFoods(userId, date): Observable<Food[]> {
     console.log('GET foods serv');
-    return this.http.get(this.foodBackendUrl + user_id + this.getSelectedDateFoodUrl + date)
+    return this.http.get(this.foodBackendUrl + userId + this.getSelectedDateFoodUrl + date)
       .map(this.onFoodReceived)
       .catch(this.handleError);
   }

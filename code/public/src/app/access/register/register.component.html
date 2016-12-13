@@ -1,5 +1,9 @@
 <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
-  {{someText}}
+  <form (ngSubmit)="tryRegister(user)" autocomplete="off">
+    <input pInputText type="text" name="textInput" [(ngModel)]="user.email" placeholder="Email" autofocus>
+    <input pInputText type="text" name="textInput" [(ngModel)]="user.password" placeholder="Password" autofocus>
+    <button md-raised-button color="primary">Register</button>
+  </form>
 </p-overlayPanel>
 
 <button type="text" pButton label="Basic" (click)="op.toggle($event)">Register</button>
