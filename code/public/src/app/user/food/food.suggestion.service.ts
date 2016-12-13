@@ -14,7 +14,7 @@ import { NdbFood } from '../../_models/NdbFood';
 @Injectable()
 export class FoodSuggestionService {
 
-    private backendUrl = 'http://127.0.0.1:5000/api/food/';
+    private backendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/food/';
 
     constructor (private http: Http) {}
 

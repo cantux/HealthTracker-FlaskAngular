@@ -20,9 +20,9 @@ import { Credential } from '../_models/Credential';
 
 @Injectable()
 export class AuthService {
-  private loginUrl = 'http://http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth';
+  private loginUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth';
 
-  private registerUrl = 'http://http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth/new';
+  private registerUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth/new';
 
   constructor (private http: Http) {}
 

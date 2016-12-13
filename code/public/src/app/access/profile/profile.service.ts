@@ -19,7 +19,7 @@ export class ProfileService {
 
   constructor (private http: Http) {}
 
-  private backendUrl = "http://127.0.0.1:5000/api/user/";
+  private backendUrl = "http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/user/";
   putUserDetails(userId, userDetails) : Observable<UserDetail> {
     return this.http.put(this.backendUrl + userId, userDetails)
       .map(this.onUserDetailRecieved)
