@@ -355,7 +355,7 @@ def post_weight_selected_date(user_id, selected_date):
 def get_weight_selected_date(user_id, selected_date):
     converted_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
 
-    user = User.query.filter_by(Id=user_id,Date=converted_date).first()
+    user = User.query.filter_by(Id=user_id).first()
     weight = user.Weights.filter_by(Date=converted_date).first()
     if weight:
         return make_response(jsonify(weight.serialize()))
@@ -403,19 +403,19 @@ class Weight(db.Model):
 
 
 if __name__ == '__main__':
-    db.create_all()
-    first_user = User(Email="email", Password="pass")
-    db.session.add(first_user)
-    db.session.commit()
-    one_user = User.query.filter_by(Id=1).first()
-
-    weight1 = Weight(one_user.Id, 77, datetime.utcnow())
-    weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
-    db.session.add(weight1)
-    db.session.add(weight2)
-    one_user.Weights.append(weight1)
-    one_user.Weights.append(weight2)
-    db.session.commit()
+    # db.create_all()
+    # first_user = User(Email="email", Password="pass")
+    # db.session.add(first_user)
+    # db.session.commit()
+    # one_user = User.query.filter_by(Id=1).first()
+    #
+    # weight1 = Weight(one_user.Id, 77, datetime.utcnow())
+    # weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
+    # db.session.add(weight1)
+    # db.session.add(weight2)
+    # one_user.Weights.append(weight1)
+    # one_user.Weights.append(weight2)
+    # db.session.commit()
 
 
     # weight_user = User.query.filter_by(Id=1).first()
@@ -423,7 +423,7 @@ if __name__ == '__main__':
     #
     # selected_ndbno = "01009"
     # print FCD.get_measures_frontend(selected_ndbno)
-    app.run()
-    # app.run(debug=True)
+    # app.run()
+    app.run(host="0.0.0.0")
 
 
