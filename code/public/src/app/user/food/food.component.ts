@@ -36,6 +36,8 @@ export class FoodComponent implements OnInit {
     console.log('food component constr');
   }
 
+  totalCalorie = 0;
+
   ngOnInit () {
     console.log('food component ngoninit: Selected Date: ', this.selectedDate);
     this.routeSubscription = this.route.params.subscribe(params => {
@@ -48,6 +50,11 @@ export class FoodComponent implements OnInit {
           this.foods = x;
         }
       )
+
+      this.consumptionService.getCalories(this.userId, this.selectedDate).subscribe(x=>
+      {
+        this.totalCalorie=x
+      })
     });
   }
 
@@ -68,6 +75,10 @@ export class FoodComponent implements OnInit {
           console.log('foods received on date change: ', JSON.stringify(x));
           this.foods = x;
         });
+      this.consumptionService.getCalories(this.userId, this.selectedDate).subscribe(x=>
+      {
+        this.totalCalorie=x
+      })
     }
   }
 

@@ -10,20 +10,27 @@ import { InputTextModule } from 'primeng/components/inputtext/inputtext';
 import { AccessComponent } from './access.component';
 import { LoginComponent } from './login'
 import { RegisterComponent } from './register'
+import { ProfileComponent } from './profile'
+import { ProfileService } from './profile/profile.service'
+
+import { UserModule } from '../user'
 
 @NgModule({
   imports: [
     OverlayPanelModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    UserModule
   ],
   exports: [ AccessComponent ],
   declarations: [
     AccessComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ProfileComponent
   ],
-  bootstrap: [ AccessComponent ]
+  bootstrap: [ AccessComponent ],
+  providers: [ ProfileService ]
 })
 export class AccessModule {
   constructor () {

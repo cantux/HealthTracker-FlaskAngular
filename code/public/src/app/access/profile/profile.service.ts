@@ -1,5 +1,5 @@
 /**
- * Created by cant on 12/7/16.
+ * Created by cant on 12/13/16.
  */
 import { Injectable } from '@angular/core'
 import { Http, Response } from '@angular/http';
@@ -12,23 +12,21 @@ import 'rxjs/add/observable/throw';
 // Operators
 import 'rxjs/add/operator/catch';
 
-import { UserDetail } from '../_models/UserDetail';
+import { UserDetail } from '../../_models/UserDetail';
 
 @Injectable()
-export class UserDetailService {
-
-  private backendUrl = 'http://127.0.0.1:5000/api/user/';
+export class ProfileService {
 
   constructor (private http: Http) {}
 
-  public getDetails(id) : Observable<UserDetail> {
-    console.log('get user detail serv');
-    return this.http.get(this.backendUrl + id)
-      .map(this.onUserDetailReceived)
+  private backendUrl = "http://127.0.0.1:5000/api/user/";
+  putUserDetails(userId, userDetails) : Observable<UserDetail> {
+    return this.http.put(this.backendUrl + userId, userDetails)
+      .map(this.onUserDetailRecieved)
       .catch(this.handleUserDetailError);
   }
 
-  private onUserDetailReceived(res: Response) {
+  private onUserDetailRecieved(res: Response) {
     let body = res.json();
     return new UserDetail(body["Password"], body["Name"], body["Surname"], body["Height"]);
   }
@@ -45,5 +43,4 @@ export class UserDetailService {
     console.error(errMsg);
     return Observable.throw(errMsg);
   }
-
 }

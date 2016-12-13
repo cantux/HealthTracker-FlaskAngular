@@ -13,6 +13,8 @@ import 'rxjs/add/observable/throw';
 // Operators
 import 'rxjs/add/operator/catch';
 
+import { Weight } from '../../_models/Weight';
+
 @Injectable()
 export class WeightService {
 
@@ -20,14 +22,38 @@ export class WeightService {
   private weightApiUrl = '/weight/';
   constructor (private http: Http) {}
 
-  public getWeights(id, startDate, endDate) : Observable<Response> {
-    console.log('get weight serv');
-    return this.http.get(this.backendUrl + id + this.weightApiUrl + startDate + '/' + endDate)
-      .map(this.onWeightRecieved)
+  public postWeightByDate(id, selectedDate, weight): Observable<Weight> {
+    console.log('post weight by date serv');
+    return this.http.post(this.backendUrl + id + this.weightApiUrl + selectedDate, weight)
+      .map(this.onWeightPosted)
       .catch(this.handleUserDetailError);
   }
 
-  private onWeightRecieved(res: Response) {
+  private onWeightPosted(res: Response) {
+    let body = res.json();
+    return new Weight(body["Weight"], body["Date"]);
+  }
+
+  public getWeightByDate(id, selectedDate): Observable<Weight> {
+    console.log('get weight by date serv');
+    return this.http.get(this.backendUrl + id + this.weightApiUrl + selectedDate)
+      .map(this.onWeightByDateRecieved)
+      .catch(this.handleUserDetailError);
+  }
+
+  private onWeightByDateRecieved(res: Response) {
+    let body = res.json();
+    return new Weight(body["Weight"], body["Date"]);
+  }
+
+  public getWeights(id, startDate, endDate) : Observable<Response> {
+    console.log('get weight interval serv');
+    return this.http.get(this.backendUrl + id + this.weightApiUrl + startDate + '/' + endDate)
+      .map(this.onWeightIntervalRecieved)
+      .catch(this.handleUserDetailError);
+  }
+
+  private onWeightIntervalRecieved(res: Response) {
     let body = res.json();
     return body;
   }

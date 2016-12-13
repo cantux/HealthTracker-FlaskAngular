@@ -12,19 +12,22 @@ import 'rxjs/add/observable/throw';
 // Operators
 import 'rxjs/add/operator/catch';
 
+import 'rxjs/Observer';
+
+import {Subject} from 'rxjs/Subject';
+
 import { Credential } from '../_models/Credential';
 
 @Injectable()
 export class AuthService {
-  private loginUrl = 'http://127.0.0.1:5000/api/auth';
+  private loginUrl = 'http://http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth';
 
-  private registerUrl = 'http://127.0.0.1:5000/api/auth/new';
+  private registerUrl = 'http://http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth/new';
 
   constructor (private http: Http) {}
 
-  public credentialObs: Observable<Credential>;
-
-  public credential: Credential;
+  // private credential = new Subject<Credential>()
+  // public credentialAnnouncer = this.credential.asObservable();
 
   public login(user) : Observable<Response> {
     console.log('authServ login');
@@ -36,32 +39,26 @@ export class AuthService {
   private verifyLogin(res: Response) {
     let body = res.json();
 
-    this.credential = new Credential(body.email, body.id);
-
-    console.log(JSON.stringify(this.credential))
-
-    this.credentialObs = new Observable<Credential>(
-      observer => { observer.next(this.credential) });
+    // this.credentialAnnouncer.next(new Credential(body["Email"], body["Id"], true))
 
     return body;
+  }
+
+  public logout() {
+    // this.credentialAnnouncer.next(new Credential('', '', false))
   }
 
   public register(user) : Observable<Response> {
     console.log('authServ register');
     return this.http.post(this.registerUrl, user)
-      .map(this.verifyRegister)
+      .map(this.registerRecieved)
       .catch(this.handleLoginError);
   }
 
-  private verifyRegister(res: Response) {
+  registerRecieved(res: Response) {
     let body = res.json();
 
-    this.credential = new Credential(body.email, body.id);
-
-    console.log(JSON.stringify(this.credential))
-
-    this.credentialObs = new Observable<Credential>(
-      observer => { observer.next(this.credential) });
+    // this.credentialAnnouncer.next(new Credential(body["Email"], body["Id"], true))
 
     return body;
   }

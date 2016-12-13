@@ -10,8 +10,7 @@ import { User } from '../../_models/User';
 
 @Component({
   selector: 'login',
-  templateUrl: './login.component.html',
-  providers: [ AuthService ]
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
 
@@ -30,8 +29,11 @@ export class LoginComponent {
     this.authService.login(user).subscribe(
       res => {
         console.log(res)
-        if(res['id']) {
-          this.router.navigate(['/user', res['id']])
+        if(res['Id']) {
+          this.router.navigate(['/user', res['Id']])
+        }
+        else {
+          console.log('wrong response object recieved');
         }
       },
           err => console.log(err)

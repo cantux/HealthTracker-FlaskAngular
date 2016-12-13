@@ -9,6 +9,7 @@ import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
 import { DropdownModule } from 'primeng/components/dropdown/dropdown';
 import { ButtonModule } from 'primeng/components/button/button';
+import { ChartModule } from 'primeng/components/chart/chart';
 
 import { USER_RESOLVER_PROVIDERS } from './user.resolver.service';
 import { UserDetailService } from './user.detail.service';
@@ -25,6 +26,11 @@ import { ActivityService } from './activity/activity.service'
 
 import { WeightComponent } from './weight'
 import { WeightService } from './weight/weight.service'
+import { BmiComponent } from './weight/bmi'
+import { ReportComponent } from './weight/report'
+
+import { ICGraphComponent } from './ic.graph'
+
 
 const USER_PROVIDERS = [
   ...USER_RESOLVER_PROVIDERS,
@@ -43,15 +49,18 @@ const USER_PROVIDERS = [
     CalendarModule,
     AutoCompleteModule,
     DropdownModule,
-    ButtonModule
+    ButtonModule,
+    ChartModule
   ],
-  exports: [
-    UserComponent ],
+  exports: [ UserComponent ],
   declarations: [
     UserComponent,
     WeightComponent,
     FoodComponent,
-    ActivityComponent
+    ActivityComponent,
+    BmiComponent,
+    ReportComponent,
+    ICGraphComponent
   ],
   bootstrap: [
     UserComponent ],

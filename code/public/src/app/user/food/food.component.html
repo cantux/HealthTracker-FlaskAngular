@@ -1,6 +1,8 @@
 <p-dataList [value]="foods" [paginator]="true" [rows]="5">
   <header>
     List of Foods
+    <hr>
+    Today's total calorie intake: {{totalCalorie}}
   </header>
   <template let-food>
     <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:14px;padding:20px;border-bottom:1px solid #D5D5D5;">

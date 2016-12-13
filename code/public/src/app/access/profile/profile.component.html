@@ -1,1 +1,6 @@
-Profile Component HTML
+Name: <input type="text" pInputText [(ngModel)]="user.Name"/>
+Surname: <input type="text" pInputText [(ngModel)]="user.Surname"/>
+Password: <input type="text" pInputText [(ngModel)]="user.Password"/>
+Height: <input type="text" pInputText [(ngModel)]="user.Height"/>
+
+<button type="text" pButton label="Basic" (click)="onProfileSubmit()">Submit Changes</button>

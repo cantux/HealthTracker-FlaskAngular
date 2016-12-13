@@ -25,7 +25,25 @@ export class ConsumptionService {
 
   private foodUrl = '/food/new';
 
-  constructor (private http: Http, private authService: AuthService) {}
+  private getEnergyUrl = '/consumption/'
+  constructor (private http: Http) {}
+
+  public getCalories(userId: string, startDate): Observable<any> {
+    //
+    // this.authService.credentialObs.subscribe(
+    //   cred => {
+    //     console.log('cred: ', JSON.stringify(cred))
+    //   });
+    // console.log(this.backendUrl + this.authService.credential.Id + this.foodUrl);
+    console.log('get consume food service:');
+    return this.http.get(this.backendUrl + userId + this.getEnergyUrl + startDate)
+      .map(this.onCalorieIntakeRetreived)
+      .catch(this.handleError);
+  }
+
+  private onCalorieIntakeRetreived (res: Response) {
+    return res.json();
+  }
 
   public consumeFood(userId: string, food: Food): Observable<any> {
     //

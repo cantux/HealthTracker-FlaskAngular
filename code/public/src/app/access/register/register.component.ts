@@ -24,12 +24,15 @@ export class RegisterComponent {
   }
 
   tryRegister(user: User) {
-    console.log('tryLogin');
+    console.log('tryRegister');
     this.authService.register(user).subscribe(
       res => {
         console.log(res)
-        if(res['id']) {
-          this.router.navigate(['/user', res['id']])
+        if(res['Id']) {
+          this.router.navigate(['/user', res['Id']])
+        }
+        else {
+          console.log('email already exists');
         }
       },
       err => console.log(err)

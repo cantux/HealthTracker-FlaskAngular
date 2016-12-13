@@ -3,6 +3,8 @@
  */
 import { Component } from '@angular/core';
 
+// import { AuthService } from './auth.service'
+
 @Component({
   selector: 'access',
   templateUrl: './access.component.html'
@@ -15,6 +17,9 @@ export class AccessComponent {
   }
 
   ngOnInit () {
+    // this.authService.credentialAnnouncer.subscribe(x => {
+    //   console.log(JSON.stringify(x));
+    // })
     console.log('access overlay component ngoninit');
   }
 }

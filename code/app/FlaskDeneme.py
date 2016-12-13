@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, make_response, request, abort, json
+from flask import Flask, jsonify, make_response, request, abort
 from flask_sqlalchemy import SQLAlchemy, get_debug_queries
+from sqlalchemy.sql import func
 
 from flask_cors import CORS, cross_origin
 
@@ -55,18 +56,18 @@ def hello_world():
 
 @app.route('/api/auth', methods=['POST'])
 def login():
-    print 'auth request arrived: ' + request.json['password'] + ' ' + request.json['email']
-    email = request.json['email']
+    print 'auth request arrived: ' + request.json['Password'] + ' ' + request.json['Email']
+    email = request.json['Email']
     user = User.query.filter_by(Email = email).first()
 
     if user:
-        password = request.json['password']
+        password = request.json['Password']
         if user.Password == password:
-            return make_response(jsonify({"id": user.Id, "email": user.Email}))
+            return make_response(jsonify({"Id": user.Id, "Email": user.Email}))
     return make_response('email or password didnt match', 403)
 
 @app.route('/api/auth/new', methods=['POST'])
-def register(user_id):
+def register():
     new_email = request.json["Email"]
     new_password = request.json["Password"]
     new_user = User(Email=new_email, Password=new_password)
@@ -89,7 +90,8 @@ def put_user(user_id):
     new_name = request.json["Name"]
     new_surname = request.json["Surname"]
     new_height = request.json["Height"]
-    User.update().values(Name=new_name, Surname=new_surname, Height=new_height).where(User.Id == 5)
+    new_password = request.json["Password"]
+    User.update().values(Name=new_name, Surname=new_surname, Height=new_height, Password=new_password).where(User.Id == 5)
     user = User.query.filter_by(Id = user_id).first()
 
     if user:
@@ -119,20 +121,11 @@ class User(db.Model):
     Foods = db.relationship('Food', lazy="dynamic")
     Consumptions = db.relationship('Consumption', lazy="dynamic")
 
-    def __init__(self, email, password):
-        self.Email = email
-        self.Password = password
-
-    def to_string(self):
-        weight_str = ",".join([x.to_string() for x in self.Weights])
-        return self.Email + ' weight: ' + weight_str
-
     def serialize(self):
         return {
-            "Id": self.Id,
-            "Email": self.Email,
             "Name": self.Name,
             "Surname": self.Surname,
+            "Password": self.Password,
             "Height": self.Height,
         }
 
@@ -268,13 +261,32 @@ def query_consumption_between_dates(user_id, start_date, end_date):
     return make_response(jsonify(energy_list))
 
 
+# # Get consumption on given date
+# @app.route('/api/user/<int:user_id>/consumption/<date>', methods=['GET'])
+# def list_consumption_of_given_date(user_id, date):
+#     requested_date = datetime.strptime(date, "%Y-%m-%d").date()
+#     return make_response(jsonify(Consumption.query.filter_by(UserId=user_id, Date=requested_date, Label="Energy", Unit="kcal").all()))
+
 # Get consumption on given date
 @app.route('/api/user/<int:user_id>/consumption/<date>', methods=['GET'])
-def list_consumption_of_given_date(user_id, date):
+def get_energy_consumption_of_given_date(user_id, date):
     requested_date = datetime.strptime(date, "%Y-%m-%d").date()
-    return make_response(jsonify(Consumption.query.filter_by(UserId=user_id, Date=requested_date).all()))
 
+    return make_response(jsonify(Consumption.query.with_entities(func.sum(Consumption.Value).label('sum'))\
+                                 .filter_by(UserId=user_id, Date=requested_date, Label="Energy", Unit="kcal")\
+                                 .all()))
 
+#
+# # Get consumption on given date
+# @app.route('/api/user/<int:user_id>/consumption/<startDate>/<endDate>', methods=['GET'])
+# def get_energy_consumption_of_interval(user_id, startDate, endDate):
+#     start_date = datetime.strptime(startDate, "%Y-%m-%d").date()
+#     end_date = datetime.strptime(endDate, "%Y-%m-%d").date()
+#
+#     Consumption.query.filter_by(UserId=user_id, Label="Energy", Unit="kcal")\
+#         .filter(db.between(Consumption.Date, start_date, end_date))
+#     return make_response(jsonify(Consumption.query.with_entities(func.sum(Consumption.Value).label('sum')) \
+#                                  .all()))
 class Food(db.Model):
     __tablename__ = 'Food'
     Id = db.Column('Id', db.Integer, primary_key=True, autoincrement=True, unique=True)
@@ -319,6 +331,53 @@ class Consumption(db.Model):
 
 # region Weight
 
+#post weight
+@app.route('/api/user/<int:user_id>/weight/<selected_date>', methods=['POST'])
+def post_weight_selected_date(user_id, selected_date):
+    new_weight = request.json["Weight"]
+    new_date = request.json["Date"]
+    converted_date = datetime.strptime(new_date, "%Y-%m-%d").date()
+
+    new_weight = Weight(UserId=user_id,
+                        Weight=new_weight,
+                        Date=new_date)
+
+    if new_weight:
+        db.session.add(new_weight)
+        db.session.commit()
+        return make_response(jsonify(new_weight.serialize()))
+    else:
+        abort(400)
+
+
+# Get weight between dates
+@app.route('/api/user/<int:user_id>/weight/<selected_date>', methods=['GET'])
+def get_weight_selected_date(user_id, selected_date):
+    converted_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
+
+    user = User.query.filter_by(Id=user_id,Date=converted_date).first()
+    weight = user.Weights.filter_by(Date=converted_date).first()
+    if weight:
+        return make_response(jsonify(weight.serialize()))
+    else:
+        abort(400)
+
+
+# Get weight between dates
+@app.route('/api/user/<int:user_id>/weight/<start_date>/<end_date>', methods=['GET'])
+def get_weight_interval(user_id, start_date, end_date):
+    date_start = datetime.strptime(start_date, "%Y-%m-%d").date()
+    date_end = datetime.strptime(end_date, "%Y-%m-%d").date()
+    print 'get weight dates converted start: ' + str(date_start) + ' end: ' + str(date_end)
+
+    user = User.query.filter_by(Id = user_id).first()
+    weight_list = user.Weights.filter(db.between(Weight.Date, date_start, date_end)).all()
+    if weight_list:
+        return make_response(jsonify([weight.serialize() for weight in weight_list]))
+    else:
+        abort(400)
+
+
 class Weight(db.Model):
     __tablename__ = 'Weight'
     Id = db.Column('Id', db.Integer, primary_key=True, autoincrement=True, unique=True)
@@ -336,46 +395,27 @@ class Weight(db.Model):
 
     def serialize(self):
         return {
-            "Id": self.Id,
-            "UserId": self.UserId,
             "Weight": self.Weight,
             "Date": self.Date
         }
-
-# Get weight between dates
-@app.route('/api/user/<int:user_id>/weight/<start_date>/<end_date>', methods=['GET'])
-def get_weight(user_id, start_date, end_date):
-    date_start = datetime.strptime(start_date, "%Y-%m-%d").date()
-    date_end = datetime.strptime(end_date, "%Y-%m-%d").date()
-    print 'get weight dates converted start: ' + str(date_start) + ' end: ' + str(date_end)
-
-    user = User.query.filter_by(Id = user_id).first()
-    weight_list = user.Weights.filter(db.between(Weight.Date, date_start, date_end)).all()
-    if weight_list:
-        return make_response(jsonify([weight.serialize() for weight in weight_list]))
-    else:
-        abort(400)
 
 # endregion Weight
 
 
 if __name__ == '__main__':
-    # db.create_all()
-    # first_user = User("email", "pass")
-    # db.session.add(first_user)
-    # db.session.commit()
-    # all_users = User.query.all()
-    # one_user = User.query.filter_by(Id=1).first()
-    # for elem in all_users:
-    #     print 'all: ' + elem.to_string()
-    #
-    # weight1 = Weight(one_user.Id, 77, datetime.utcnow())
-    # weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
-    # db.session.add(weight1)
-    # db.session.add(weight2)
-    # one_user.Weights.append(weight1)
-    # one_user.Weights.append(weight2)
-    # db.session.commit()
+    db.create_all()
+    first_user = User(Email="email", Password="pass")
+    db.session.add(first_user)
+    db.session.commit()
+    one_user = User.query.filter_by(Id=1).first()
+
+    weight1 = Weight(one_user.Id, 77, datetime.utcnow())
+    weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
+    db.session.add(weight1)
+    db.session.add(weight2)
+    one_user.Weights.append(weight1)
+    one_user.Weights.append(weight2)
+    db.session.commit()
 
 
     # weight_user = User.query.filter_by(Id=1).first()
@@ -383,7 +423,7 @@ if __name__ == '__main__':
     #
     # selected_ndbno = "01009"
     # print FCD.get_measures_frontend(selected_ndbno)
-    # app.run()
-    app.run(debug=True)
+    app.run()
+    # app.run(debug=True)
 
 
