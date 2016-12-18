@@ -28,16 +28,16 @@ export class WeightComponent {
     console.log('weight component ngoninit');
     this.routeSubscription = this.route.params.subscribe(params => {
       this.userId = params['id']; // (+) converts string 'id' to a number
-
-      this.weightService.getWeights(this.userId,
-                                    this.toIsoString(this.startDate),
-                                    this.toIsoString(this.endDate))
-        .subscribe(res => {
-            console.log('weight component, service response: ', res);
-          },
-          err => {
-            console.log('weight component, service error: ', err);
-          })
+      //
+      // this.weightService.getWeights(this.userId,
+      //                               this.toIsoString(this.startDate),
+      //                               this.toIsoString(this.endDate))
+      //   .subscribe(res => {
+      //       console.log('weight component, service response: ', res);
+      //     },
+      //     err => {
+      //       console.log('weight component, service error: ', err);
+      //     })
     });
   }
 
@@ -67,13 +67,13 @@ export class WeightComponent {
 
   onDateSelected() {
     console.log('weight component date selected');
-    this.weightService.getWeights(this.userId, this.toIsoString(this.startDate), this.toIsoString(this.endDate))
-      .subscribe(
-        res => {
-          console.log('weight component, service response: ', res);
-        },
-        err => {
-          console.log('weight component, service error: ', err);
-        })
+    // this.weightService.getWeights(this.userId, this.toIsoString(this.startDate), this.toIsoString(this.endDate))
+    //   .subscribe(
+    //     res => {
+    //       console.log('weight component, service response: ', res);
+    //     },
+    //     err => {
+    //       console.log('weight component, service error: ', err);
+    //     })
   }
 }

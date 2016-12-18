@@ -4,6 +4,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { AuthService } from '../access/auth.service';
+
 @Component({
   selector: 'user',
   templateUrl: './user.component.html'
@@ -13,7 +15,9 @@ export class UserComponent {
   selectedDateString: string;
   selectedDate: Date = new Date();
 
-  constructor (private router: Router, private route: ActivatedRoute) {
+  constructor (private router: Router,
+               private route: ActivatedRoute,
+               public authService: AuthService) {
     console.log('user component constr');
     this.selectedDateString = this.toIsoString(this.selectedDate);
   }
@@ -25,6 +29,10 @@ export class UserComponent {
         console.log('user component user detail recieved: ', data.userDetail);
       }
     );
+
+    this.authService.credentialObservable.subscribe(x => {
+      console.log('user component credential observable changed: ', JSON.stringify(x));
+    })
   }
 
   toIsoString(date) {

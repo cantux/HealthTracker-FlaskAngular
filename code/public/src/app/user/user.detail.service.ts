@@ -17,7 +17,7 @@ import { UserDetail } from '../_models/UserDetail';
 @Injectable()
 export class UserDetailService {
 
-  private backendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/user/';
+  private backendUrl = 'http://127.0.0.1:5000/api/user/';
 
   constructor (private http: Http) {}
 
@@ -30,7 +30,11 @@ export class UserDetailService {
 
   private onUserDetailReceived(res: Response) {
     let body = res.json();
-    return new UserDetail(body["Password"], body["Name"], body["Surname"], body["Height"]);
+    return new UserDetail(body['Email'],
+                          body["Password"],
+                          body["Name"],
+                          body["Surname"],
+                          +(body["Height"]));
   }
 
   private handleUserDetailError(error: Response) {

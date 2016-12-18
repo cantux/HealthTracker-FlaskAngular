@@ -73,6 +73,8 @@ def register():
     new_user = User(Email=new_email, Password=new_password)
 
     db.session.add(new_user)
+    db.session.flush()
+    db.session.refresh(new_user)
     db.session.commit()
 
     if new_user:
@@ -123,6 +125,8 @@ class User(db.Model):
 
     def serialize(self):
         return {
+            "Id": self.Id,
+            "Email": self.Email,
             "Name": self.Name,
             "Surname": self.Surname,
             "Password": self.Password,
@@ -331,36 +335,39 @@ class Consumption(db.Model):
 
 # region Weight
 
-#post weight
-@app.route('/api/user/<int:user_id>/weight/<selected_date>', methods=['POST'])
+#put weight
+@app.route('/api/user/<int:user_id>/weight/<selected_date>', methods=['PUT'])
 def post_weight_selected_date(user_id, selected_date):
     new_weight = request.json["Weight"]
     new_date = request.json["Date"]
     converted_date = datetime.strptime(new_date, "%Y-%m-%d").date()
 
-    new_weight = Weight(UserId=user_id,
-                        Weight=new_weight,
-                        Date=new_date)
-
-    if new_weight:
-        db.session.add(new_weight)
-        db.session.commit()
-        return make_response(jsonify(new_weight.serialize()))
+    previous_weight = Weight.query.filter_by(UserId=user_id, Date=converted_date).first()
+    if previous_weight:
+        Weight.update().values(Wieght=new_weight).where(Weight.UserId == user_id, Weight.Date == converted_date)
     else:
-        abort(400)
+        new_weight = Weight(UserId=user_id,
+                            Weight=new_weight,
+                            Date=converted_date)
+
+        if new_weight:
+            db.session.add(new_weight)
+            db.session.commit()
+            return make_response(jsonify(new_weight.serialize()))
+        else:
+            return make_response('', 204)
 
 
-# Get weight between dates
+# Get weight on date
 @app.route('/api/user/<int:user_id>/weight/<selected_date>', methods=['GET'])
 def get_weight_selected_date(user_id, selected_date):
     converted_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
 
-    user = User.query.filter_by(Id=user_id).first()
-    weight = user.Weights.filter_by(Date=converted_date).first()
+    weight = Weight.query.filter_by(UserId=user_id, Date=converted_date).first()
     if weight:
         return make_response(jsonify(weight.serialize()))
     else:
-        abort(400)
+        return make_response('', 204)
 
 
 # Get weight between dates
@@ -384,14 +391,6 @@ class Weight(db.Model):
     UserId = db.Column('UserId', db.INT, db.ForeignKey('User.Id'))
     Weight = db.Column('Weight', db.INT)
     Date = db.Column('Date', db.DATETIME)
-
-    def __init__(self, user_id, weight, date):
-        self.UserId = user_id
-        self.Date = date
-        self.Weight = weight
-
-    def to_string(self):
-        return 'weight: ' + str(self.Weight) + ' date: ' + str(self.Date)
 
     def serialize(self):
         return {
@@ -417,13 +416,7 @@ if __name__ == '__main__':
     # one_user.Weights.append(weight2)
     # db.session.commit()
 
-
-    # weight_user = User.query.filter_by(Id=1).first()
-    # print 'one: ' + weight_user.to_string()
-    #
-    # selected_ndbno = "01009"
-    # print FCD.get_measures_frontend(selected_ndbno)
     # app.run()
-    app.run(host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0")
 
 

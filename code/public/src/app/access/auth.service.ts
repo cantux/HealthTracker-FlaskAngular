@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 // Statics
 import 'rxjs/add/observable/throw';
@@ -12,55 +13,61 @@ import 'rxjs/add/observable/throw';
 // Operators
 import 'rxjs/add/operator/catch';
 
-import 'rxjs/Observer';
-
-import {Subject} from 'rxjs/Subject';
-
-import { Credential } from '../_models/Credential';
+import { UserCredential } from '../_models/UserCredential';
+import { UserDetail } from '../_models/UserDetail';
 
 @Injectable()
 export class AuthService {
-  private loginUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth';
+  private loginUrl = 'http://127.0.0.1:5000/api/auth';
 
-  private registerUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/auth/new';
+  private registerUrl = 'http://127.0.0.1:5000/api/auth/new';
 
-  constructor (private http: Http) {}
+  // Observable navItem source
+  private actualCredential = new ReplaySubject<UserCredential>();
+  // Observable navItem stream
+  credentialObservable = this.actualCredential.asObservable();
 
-  // private credential = new Subject<Credential>()
-  // public credentialAnnouncer = this.credential.asObservable();
+  constructor (private http: Http) {
+    let userCredential: UserCredential = JSON.parse(localStorage.getItem('userCredential'))
+                                                                    || new UserCredential('','');
+    this.actualCredential.next(userCredential);
+  }
 
-  public login(user) : Observable<Response> {
+  public login(user: UserDetail) {
     console.log('authServ login');
-    return this.http.post(this.loginUrl, user)
+
+    this.http.post(this.loginUrl, user)
       .map(this.verifyLogin)
-      .catch(this.handleLoginError);
+      .catch(this.handleLoginError).subscribe(x => {
+      localStorage.setItem('userCredential', JSON.stringify(x));
+      this.actualCredential.next(x);
+    })
   }
 
   private verifyLogin(res: Response) {
     let body = res.json();
-
-    // this.credentialAnnouncer.next(new Credential(body["Email"], body["Id"], true))
-
-    return body;
+    return new UserCredential(body["Email"], body["Id"], true);
   }
 
   public logout() {
-    // this.credentialAnnouncer.next(new Credential('', '', false))
+    localStorage.removeItem('userCredential');
+    this.actualCredential.next(new UserCredential('', ''));
   }
 
-  public register(user) : Observable<Response> {
+  public register(userDetail: UserDetail) {
     console.log('authServ register');
-    return this.http.post(this.registerUrl, user)
+
+    this.http.post(this.registerUrl, userDetail)
       .map(this.registerRecieved)
-      .catch(this.handleLoginError);
+      .catch(this.handleLoginError).subscribe(receivedUserCredential => {
+      localStorage.setItem('userCredential', JSON.stringify(receivedUserCredential));
+      this.actualCredential.next(receivedUserCredential)
+    })
   }
 
   registerRecieved(res: Response) {
     let body = res.json();
-
-    // this.credentialAnnouncer.next(new Credential(body["Email"], body["Id"], true))
-
-    return body;
+    return new UserCredential(body["Email"], body["Id"], true);
   }
 
   private handleLoginError(error: Response) {

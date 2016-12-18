@@ -30,7 +30,7 @@ import { BmiComponent } from './weight/bmi'
 import { ReportComponent } from './weight/report'
 
 import { ICGraphComponent } from './ic.graph'
-
+import { AuthService } from '../access/auth.service';
 
 const USER_PROVIDERS = [
   ...USER_RESOLVER_PROVIDERS,

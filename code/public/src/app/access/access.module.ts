@@ -11,7 +11,7 @@ import { AccessComponent } from './access.component';
 import { LoginComponent } from './login'
 import { RegisterComponent } from './register'
 import { ProfileComponent } from './profile'
-import { ProfileService } from './profile/profile.service'
+// import { ProfileService } from './profile/profile.service'
 
 import { UserModule } from '../user'
 
@@ -30,7 +30,7 @@ import { UserModule } from '../user'
     ProfileComponent
   ],
   bootstrap: [ AccessComponent ],
-  providers: [ ProfileService ]
+  providers: [ /* ProfileService */]
 })
 export class AccessModule {
   constructor () {

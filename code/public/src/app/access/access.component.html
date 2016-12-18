@@ -1,6 +1,10 @@
 
-<login></login>
-<register></register>
-
-<!--<profile></profile>-->
+<!--<div *ngif="!authService.credentialObservable.IsLoggedIn | async">-->
+  <login></login>
+  <register></register>
+<!--</div>-->
+<!--<div *ngif="!authService.credentialObservable.IsLoggedIn | async">-->
+  <!--<profile></profile>-->
+  <!--&lt;!&ndash;<logout></logout>&ndash;&gt;-->
+<!--</div>-->
 

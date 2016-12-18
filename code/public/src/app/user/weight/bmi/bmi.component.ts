@@ -2,7 +2,8 @@
  * Created by cant on 12/13/16.
  */
 import { Component, OnInit, Input, Pipe, PipeTransform } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+
+import { AuthService } from '../../../access/auth.service';
 
 import { WeightService } from '../weight.service';
 import { UserDetailService } from '../../user.detail.service';
@@ -17,13 +18,13 @@ export class BmiComponent implements OnInit {
 
   private routeSubscription;
   userId: string;
-  weight: Weight;
+  weight: Weight = new Weight(0,'');
   height: number;
   weightInputText: string;
 
   Bmi: any = "Enter weight to see your BMI!!";
 
-  constructor(private route: ActivatedRoute,
+  constructor(private authService: AuthService,
               private weightService: WeightService,
               private userDetailService: UserDetailService) {
     console.log('bmi component constr');
@@ -31,20 +32,12 @@ export class BmiComponent implements OnInit {
 
   ngOnInit() {
     console.log('bmi component ngoninit');
-    this.routeSubscription = this.route.params.subscribe(params => {
-      this.userId = params['id']; // (+) converts string 'id' to a number
-      console.log('route subs userid: ', this.userId);
-      this.weightService.getWeightByDate(this.userId, this.selectedDate).subscribe(
-        x => {
-          console.log('activities received: ', JSON.stringify(x));
-          this.weight = x;
-        }
-      )
-
-      this.userDetailService.getDetails(this.userId).subscribe(x => {
-        this.height = x["Height"];
-        this.Bmi = this.weight.Weight / (this.height * this.height);
-      })
+    this.authService.credentialObservable.subscribe(params => {
+      this.userId = params.Id; // (+) converts string 'id' to a number
+      console.log('bmi component auth service userid: ', this.userId);
+      if(this.userId){
+        this.updateDate()
+      }
     });
   }
 
@@ -52,16 +45,42 @@ export class BmiComponent implements OnInit {
 
   @Input()
   set masterDateString(masterDateString: string) {
-    console.log('food component date selected: ', masterDateString);
+    console.log('bmi component date selected: ', masterDateString);
     this.selectedDate = masterDateString || 'no date selected';
+    if(this.userId && this.selectedDate !== 'no date selected')
+    {
+      this.updateDate();
+    }
   }
 
   onWeightAddButtonClicked () {
-    this.weightService.postWeightByDate(this.userId, this.selectedDate, +(this.weightInputText)).subscribe(
+    this.weightService.putWeightByDate(this.userId,
+                              this.selectedDate,
+                              new Weight(+(this.weightInputText), this.selectedDate)).subscribe(
       x=> {
-        this.weight = x;
-        this.Bmi = x["Weight"] / (this.height * this.height)
+        if(x) {
+          this.weight = x;
+          this.Bmi = x["Weight"] / (177/100 * 177/100)
+        }
       }
     )
+  }
+
+  updateDate() {
+    console.log('update date');
+    this.weightService.getWeightByDate(this.userId, this.selectedDate).subscribe(
+      x => {
+        if(x) {
+          console.log('weight received: ', JSON.stringify(x));
+          this.weight = x;
+        }
+      }
+    )
+
+    this.userDetailService.getDetails(this.userId).subscribe(x => {
+      this.height = 177;
+      let heightMultiplier = this.height / 100;
+      this.Bmi = this.weight.Weight / (heightMultiplier * heightMultiplier);
+    })
   }
 }

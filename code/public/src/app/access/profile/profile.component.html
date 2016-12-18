@@ -1,6 +1,11 @@
-Name: <input type="text" pInputText [(ngModel)]="user.Name"/>
-Surname: <input type="text" pInputText [(ngModel)]="user.Surname"/>
-Password: <input type="text" pInputText [(ngModel)]="user.Password"/>
-Height: <input type="text" pInputText [(ngModel)]="user.Height"/>
+<p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
+  <form (ngSubmit)="tryLogin(user)" autocomplete="off">
+    Name: <input type="text" pInputText [(ngModel)]="user.Name"/>
+    Surname: <input type="text" pInputText [(ngModel)]="user.Surname"/>
+    Password: <input type="text" pInputText [(ngModel)]="user.Password"/>
+    Height: <input type="text" pInputText [(ngModel)]="user.Height"/>
+    <button type="text" pButton label="Basic" (click)="onSubmit()">Submit Changes</button>
+  </form>
+</p-overlayPanel>
 
-<button type="text" pButton label="Basic" (click)="onProfileSubmit()">Submit Changes</button>
+<button type="text" pButton label="Basic" (click)="op.toggle($event)">Login</button>

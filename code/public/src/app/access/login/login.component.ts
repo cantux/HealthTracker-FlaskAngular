@@ -6,15 +6,18 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../auth.service';
 
-import { User } from '../../_models/User';
+import { UserCredential } from '../../_models/UserCredential';
+import { UserDetail } from '../../_models/UserDetail';
 
 @Component({
   selector: 'login',
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
+  loginCompUsed: boolean = false;
 
-  user: User = new User('','');
+  email: string = '';
+  password: string = '';
 
   constructor(private authService: AuthService, private router: Router) {
     console.log('login comp constr');
@@ -22,21 +25,28 @@ export class LoginComponent {
 
   ngOnInit() {
     console.log('login comp ngoninit');
-  }
 
-  tryLogin(user: User) {
-    console.log('tryLogin');
-    this.authService.login(user).subscribe(
+    this.authService.credentialObservable.subscribe(
       res => {
-        console.log(res)
-        if(res['Id']) {
+
+        console.log('login comp cred obs ngoninit: ', res);
+
+        if(res['Id'] && this.loginCompUsed) {
           this.router.navigate(['/user', res['Id']])
         }
         else {
-          console.log('wrong response object recieved');
+          console.log('wrong response object recieved or prevented double routing');
         }
       },
-          err => console.log(err)
-      );
+      err => console.log(err)
+    );
+  }
+
+
+  tryLogin()
+  {
+    console.log('tryLogin');
+    this.loginCompUsed = true;
+    this.authService.login(new UserDetail(this.email, this.password));
   }
 }

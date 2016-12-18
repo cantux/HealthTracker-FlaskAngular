@@ -18,15 +18,15 @@ import { Weight } from '../../_models/Weight';
 @Injectable()
 export class WeightService {
 
-  private backendUrl = 'http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:5000/api/user/';
+  private backendUrl = 'http://127.0.0.1:5000/api/user/';
   private weightApiUrl = '/weight/';
   constructor (private http: Http) {}
 
-  public postWeightByDate(id, selectedDate, weight): Observable<Weight> {
+  public putWeightByDate(id, selectedDate, weight): Observable<Weight> {
     console.log('post weight by date serv');
-    return this.http.post(this.backendUrl + id + this.weightApiUrl + selectedDate, weight)
+    return this.http.put(this.backendUrl + id + this.weightApiUrl + selectedDate, weight)
       .map(this.onWeightPosted)
-      .catch(this.handleUserDetailError);
+      .catch(this.handleWightError);
   }
 
   private onWeightPosted(res: Response) {
@@ -38,10 +38,14 @@ export class WeightService {
     console.log('get weight by date serv');
     return this.http.get(this.backendUrl + id + this.weightApiUrl + selectedDate)
       .map(this.onWeightByDateRecieved)
-      .catch(this.handleUserDetailError);
+      .catch(this.handleWightError);
   }
 
   private onWeightByDateRecieved(res: Response) {
+    if(res.status == 204)
+    {
+      return new Weight(0,'');
+    }
     let body = res.json();
     return new Weight(body["Weight"], body["Date"]);
   }
@@ -50,7 +54,7 @@ export class WeightService {
     console.log('get weight interval serv');
     return this.http.get(this.backendUrl + id + this.weightApiUrl + startDate + '/' + endDate)
       .map(this.onWeightIntervalRecieved)
-      .catch(this.handleUserDetailError);
+      .catch(this.handleWightError);
   }
 
   private onWeightIntervalRecieved(res: Response) {
@@ -58,7 +62,7 @@ export class WeightService {
     return body;
   }
 
-  private handleUserDetailError(error: Response) {
+  private handleWightError(error: Response) {
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';
