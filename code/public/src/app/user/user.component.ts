@@ -42,9 +42,10 @@ export class UserComponent {
       }
       return number;
     }
-    return date.getUTCFullYear() +
-      '-' + pad(date.getUTCMonth() + 1) +
-      '-' + pad(date.getUTCDate())
+    let x = date.getFullYear() +
+      '-' + pad(date.getMonth() + 1) +
+      '-' + pad(date.getDate())
+    return x;
   }
 
   onDateSelected() {

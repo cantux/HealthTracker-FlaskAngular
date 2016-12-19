@@ -1,6 +1,6 @@
 <p-dataList [value]="foods" [paginator]="true" [rows]="5">
   <header>
-    List of Foods
+    List of Foods For Current Day
     <hr>
     Today's total calorie intake: {{totalCalorie}}
   </header>
@@ -48,20 +48,16 @@
         </template>
 
       </p-autoComplete>
+      <p-dropdown [options]="foodMeasures"
+                  [(ngModel)]="selectedMeasureLabel"
+                  required="true"
+                  [style]="{'width':'150px'}">
+      </p-dropdown>
 
-      <p-dropdown
-        [options]="foodMeasures"
-        [(ngModel)]="selectedMeasureLabel"
-        required="true"
-        [style]="{'width':'100px'}"
-      ></p-dropdown>
+      <input type="text" pInputText placeholder="Enter Quantity"
+              [(ngModel)]="quantityInputText"/>
 
-      <input type="text" pInputText
-             [(ngModel)]="quantityInputText"
-
-      />
-
-      <button pButton type="button" label="Add"
+      <button pButton type="button" label="Add Food"
               (click)="onFoodAddButtonClicked()">
       </button>
     </div>

@@ -1,15 +1,20 @@
-<p-calendar [(ngModel)]="selectedDate"
-            [showIcon]="true" dateFormat="dd-mm-yy"
-            [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030"
-            (onSelect)="onDateSelected()">
-
-</p-calendar>
-
 <div class="ui-grid ui-grid-responsive ui-fluid">
-  <weight class="ui-g-12 ui-md-3" [masterDateString]="selectedDateString"></weight>
-  <food class="ui-g-12 ui-md-3" [masterDateString]="selectedDateString"></food>
-  <activity class="ui-g-12 ui-md-3" [masterDateString]="selectedDateString"></activity>
-  <ic-graph class="ui-g-12 ui-md-3" ></ic-graph>
+  <p-fieldset legend="Today"class="ui-g-12 ui-md-9">
+    Select Date:
+    <p-calendar [(ngModel)]="selectedDate"
+                [showIcon]="true" dateFormat="dd-mm-yy"
+                [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030"
+                (onSelect)="onDateSelected()">
+
+    </p-calendar>
+    <hr/>
+    <weight class="ui-g-12 ui-md-4" [masterDateString]="selectedDateString"></weight>
+    <food class="ui-g-12 ui-md-4" [masterDateString]="selectedDateString"></food>
+    <activity class="ui-g-12 ui-md-4" [masterDateString]="selectedDateString"></activity>
+  </p-fieldset>
+  <p-fieldset legend="Reports" class="ui-g-12 ui-md-3">
+    <ic-graph class="ui-g-12 ui-md-12" ></ic-graph>
+  </p-fieldset>
 </div>
 
 

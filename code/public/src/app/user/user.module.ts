@@ -10,6 +10,7 @@ import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete
 import { DropdownModule } from 'primeng/components/dropdown/dropdown';
 import { ButtonModule } from 'primeng/components/button/button';
 import { ChartModule } from 'primeng/components/chart/chart';
+import { FieldsetModule } from 'primeng/components/fieldset/fieldset';
 
 import { USER_RESOLVER_PROVIDERS } from './user.resolver.service';
 import { UserDetailService } from './user.detail.service';
@@ -50,7 +51,8 @@ const USER_PROVIDERS = [
     AutoCompleteModule,
     DropdownModule,
     ButtonModule,
-    ChartModule
+    ChartModule,
+    FieldsetModule
   ],
   exports: [ UserComponent ],
   declarations: [

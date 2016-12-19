@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../auth.service';
 
-import { UserCredential } from '../../_models/UserCredential';
 import { UserDetail } from '../../_models/UserDetail';
 
 @Component({

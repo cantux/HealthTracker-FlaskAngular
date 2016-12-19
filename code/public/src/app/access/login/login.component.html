@@ -2,8 +2,8 @@
     <form (ngSubmit)="tryLogin()" autocomplete="off">
         <input pInputText type="text" name="textInput" [(ngModel)]="email" placeholder="Email" autofocus>
         <input pInputText type="password" name="textInput" [(ngModel)]="password" placeholder="Password" autofocus>
-        <button md-raised-button color="primary">Login</button>
+        <button pButton label="Login" md-raised-button color="primary"></button>
     </form>
 </p-overlayPanel>
 
-<button type="text" pButton label="Basic" (click)="op.toggle($event)">Login</button>
+<button pButton type="text" label="Login" (click)="op.toggle($event)"></button>

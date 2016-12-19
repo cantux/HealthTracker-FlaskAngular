@@ -26,19 +26,19 @@ import * as primeUITheme from 'primeui/themes/bootstrap/theme.css'
       |
       <span>
         <a [routerLink]=" ['./home'] ">
-          Home
+          Health Tracker Home
         </a>
       </span>
       |
       <span>
         <a [routerLink]=" ['./detail'] ">
-          Detail
+          Async Module Detail
         </a>
       </span>
       |
       <span>
         <a [routerLink]=" ['./about'] ">
-          About
+          About Us
         </a>
       </span>
       <access></access>

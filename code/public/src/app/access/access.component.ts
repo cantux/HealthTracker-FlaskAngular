@@ -3,7 +3,7 @@
  */
 import { Component } from '@angular/core';
 
-// import { AuthService } from './auth.service'
+import { AuthService } from './auth.service'
 
 @Component({
   selector: 'access',
@@ -11,15 +11,19 @@ import { Component } from '@angular/core';
 
 })
 export class AccessComponent {
-  someText = 'access overlay text'
-  constructor () {
+
+  private isLoggedIn: boolean = false;
+  private userId;
+  constructor (private authService: AuthService) {
     console.log('access overlay component constr');
   }
 
   ngOnInit () {
-    // this.authService.credentialAnnouncer.subscribe(x => {
-    //   console.log(JSON.stringify(x));
-    // })
     console.log('access overlay component ngoninit');
+    this.authService.credentialObservable.subscribe(params => {
+      console.log('is logged in: ', params.IsLoggedIn)
+      this.isLoggedIn = params.IsLoggedIn;
+      this.userId = params.Id;
+    });
   }
 }

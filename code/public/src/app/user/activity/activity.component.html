@@ -31,7 +31,7 @@
         (completeMethod)="activitySearch($event)"
         (onSelect)="onActivitySelected($event)"
         delay="700"
-        placeholder="Type to select activity"
+        placeholder="Type CYCLI not all activities are imported"
         [size]="30"
         [minLength]="5"
       >
@@ -43,12 +43,12 @@
 
       </p-autoComplete>
 
-      <input type="text" pInputText
+      <input type="text" pInputText placeholder="Enter Duration"
              [(ngModel)]="durationInputText"
 
       />
 
-      <button pButton type="button" label="Add"
+      <button pButton type="button" label="Add Activity"
               (click)="onActivityAddButtonClicked()">
       </button>
     </div>

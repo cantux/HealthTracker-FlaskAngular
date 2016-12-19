@@ -18,9 +18,9 @@ import { UserDetail } from '../_models/UserDetail';
 
 @Injectable()
 export class AuthService {
-  private loginUrl = 'http://127.0.0.1:5000/api/auth';
+  private loginUrl = 'http://ht.cantuksavul.com:5000/api/auth';
 
-  private registerUrl = 'http://127.0.0.1:5000/api/auth/new';
+  private registerUrl = 'http://ht.cantuksavul.com:5000/api/auth/new';
 
   // Observable navItem source
   private actualCredential = new ReplaySubject<UserCredential>();

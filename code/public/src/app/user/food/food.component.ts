@@ -74,11 +74,12 @@ export class FoodComponent implements OnInit {
         x => {
           console.log('foods received on date change: ', JSON.stringify(x));
           this.foods = x;
-        });
-      this.consumptionService.getCalories(this.userId, this.selectedDate).subscribe(x=>
-      {
-        this.totalCalorie=x
-      })
+          this.consumptionService.getCalories(this.userId, this.selectedDate).subscribe(x=>
+          {
+            this.totalCalorie=x
+          })
+        }
+      );
     }
   }
 
@@ -125,6 +126,7 @@ export class FoodComponent implements OnInit {
         this.selectedFoodName = result.Name;
         this.foodProviderService.getFoodMeasureLabels(result.NdbNumber).subscribe(
           measures => {
+            this.selectedMeasureLabel = measures[0].Label;
             this.foodMeasures = measures.map(
               m => {
                 return { label: m.Label + " " + m.Eqv, value: m.Label };
@@ -146,6 +148,10 @@ export class FoodComponent implements OnInit {
     this.consumptionService.consumeFood(this.userId, new_food).subscribe(
       x => {
         console.log('food component consumed food name: ', x);
+        this.consumptionService.getCalories(this.userId, this.selectedDate).subscribe(x=>
+        {
+          this.totalCalorie=x
+        })
       });
   }
 }

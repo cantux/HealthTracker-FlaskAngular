@@ -17,7 +17,7 @@ import { UserDetail } from '../_models/UserDetail';
 @Injectable()
 export class UserDetailService {
 
-  private backendUrl = 'http://127.0.0.1:5000/api/user/';
+  private backendUrl = 'http://ht.cantuksavul.com:5000/api/user/';
 
   constructor (private http: Http) {}
 
@@ -35,6 +35,13 @@ export class UserDetailService {
                           body["Name"],
                           body["Surname"],
                           +(body["Height"]));
+  }
+
+  public putUserDetails(id, user: UserDetail) {
+    console.log('put user detail serv');
+    return this.http.put(this.backendUrl + id, user)
+      .map(this.onUserDetailReceived)
+      .catch(this.handleUserDetailError);
   }
 
   private handleUserDetailError(error: Response) {

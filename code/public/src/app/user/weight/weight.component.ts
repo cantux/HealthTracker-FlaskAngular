@@ -60,9 +60,9 @@ export class WeightComponent {
       }
       return number;
     }
-    return date.getUTCFullYear() +
-      '-' + pad(date.getUTCMonth() + 1) +
-      '-' + pad(date.getUTCDate())
+    return date.getFullYear() +
+      '-' + pad(date.getMonth() + 1) +
+      '-' + pad(date.getDate())
   }
 
   onDateSelected() {

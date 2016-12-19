@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, make_response, request, abort
 from flask_sqlalchemy import SQLAlchemy, get_debug_queries
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, and_
 
 from flask_cors import CORS, cross_origin
 
@@ -93,8 +93,8 @@ def put_user(user_id):
     new_surname = request.json["Surname"]
     new_height = request.json["Height"]
     new_password = request.json["Password"]
-    User.update().values(Name=new_name, Surname=new_surname, Height=new_height, Password=new_password).where(User.Id == 5)
-    user = User.query.filter_by(Id = user_id).first()
+    User.query.filter_by(User.Id == user_id).update(Name=new_name, Surname=new_surname, Height=new_height, Password=new_password)
+    user = User.query.filter_by(Id=user_id).first()
 
     if user:
         return make_response(jsonify(user.serialize()))
@@ -108,6 +108,7 @@ def get_user(user_id):
     if user:
         return make_response(jsonify(user.serialize()))
     return make_response('no such user', 404)
+
 
 class User(db.Model):
     __tablename__ = 'User'
@@ -276,7 +277,7 @@ def query_consumption_between_dates(user_id, start_date, end_date):
 def get_energy_consumption_of_given_date(user_id, date):
     requested_date = datetime.strptime(date, "%Y-%m-%d").date()
 
-    return make_response(jsonify(Consumption.query.with_entities(func.sum(Consumption.Value).label('sum'))\
+    return make_response(jsonify(Consumption.query.with_entities(func.sum(Consumption.Total).label('sum'))\
                                  .filter_by(UserId=user_id, Date=requested_date, Label="Energy", Unit="kcal")\
                                  .all()))
 
@@ -344,7 +345,10 @@ def post_weight_selected_date(user_id, selected_date):
 
     previous_weight = Weight.query.filter_by(UserId=user_id, Date=converted_date).first()
     if previous_weight:
-        Weight.update().values(Wieght=new_weight).where(Weight.UserId == user_id, Weight.Date == converted_date)
+        previous_weight.Weight=new_weight
+        db.session.commit()
+        db.session.refresh(previous_weight)
+        return make_response(jsonify(previous_weight.serialize()))
     else:
         new_weight = Weight(UserId=user_id,
                             Weight=new_weight,
@@ -402,21 +406,12 @@ class Weight(db.Model):
 
 
 if __name__ == '__main__':
-    # db.create_all()
-    # first_user = User(Email="email", Password="pass")
-    # db.session.add(first_user)
-    # db.session.commit()
-    # one_user = User.query.filter_by(Id=1).first()
-    #
-    # weight1 = Weight(one_user.Id, 77, datetime.utcnow())
-    # weight2 = Weight(one_user.Id, 76, datetime.utcnow() - timedelta(days=1))
-    # db.session.add(weight1)
-    # db.session.add(weight2)
-    # one_user.Weights.append(weight1)
-    # one_user.Weights.append(weight2)
-    # db.session.commit()
+    db.create_all()
+    first_user = User(Email="email", Password="pass")
+    db.session.add(first_user)
+    db.session.commit()
 
-    # app.run()
-    app.run(debug=True, host="0.0.0.0")
+    app.run()
+    # app.run(debug=True, host="0.0.0.0")
 
 

@@ -1,10 +1,11 @@
 
 Entered Weight: {{weight.Weight}}
+<br>
 BMI : {{Bmi}}
 
-<input type="text" pInputText placeholder="->Enter Here<-"
+<input type="text" pInputText placeholder="Enter Weight"
        [(ngModel)]="weightInputText"
 />
-<button pButton type="button" label="Add New Record"
+<button pButton type="button" label="Add Today's Weight"
         (click)="onWeightAddButtonClicked()">
 </button>

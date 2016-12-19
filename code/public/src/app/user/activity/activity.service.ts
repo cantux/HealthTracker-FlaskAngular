@@ -17,7 +17,7 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class ActivityService {
-  private backendUrl = 'http://127.0.0.1:5000/api/user/';
+  private backendUrl = 'http://ht.cantuksavul.com:5000/api/user/';
   private activityUrl = '/activity/';
 
   constructor(public http: Http) {

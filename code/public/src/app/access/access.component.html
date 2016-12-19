@@ -1,10 +1,14 @@
-
-<!--<div *ngif="!authService.credentialObservable.IsLoggedIn | async">-->
+<div *ngIf="!isLoggedIn">
   <login></login>
   <register></register>
-<!--</div>-->
-<!--<div *ngif="!authService.credentialObservable.IsLoggedIn | async">-->
-  <!--<profile></profile>-->
-  <!--&lt;!&ndash;<logout></logout>&ndash;&gt;-->
-<!--</div>-->
+</div>
+<div *ngIf="isLoggedIn">
+  <span>
+    <a [routerLink]=" ['./user', userId] ">
+      Home
+    </a>
+  </span>
+  <profile></profile>
+  <logout></logout>
+</div>
 

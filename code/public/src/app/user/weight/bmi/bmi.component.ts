@@ -35,7 +35,7 @@ export class BmiComponent implements OnInit {
     this.authService.credentialObservable.subscribe(params => {
       this.userId = params.Id; // (+) converts string 'id' to a number
       console.log('bmi component auth service userid: ', this.userId);
-      if(this.userId){
+      if(this.userId && this.userId !== ''){
         this.updateDate()
       }
     });
@@ -47,7 +47,7 @@ export class BmiComponent implements OnInit {
   set masterDateString(masterDateString: string) {
     console.log('bmi component date selected: ', masterDateString);
     this.selectedDate = masterDateString || 'no date selected';
-    if(this.userId && this.selectedDate !== 'no date selected')
+    if(this.userId && this.userId !== '' && this.selectedDate !== 'no date selected')
     {
       this.updateDate();
     }
@@ -60,7 +60,20 @@ export class BmiComponent implements OnInit {
       x=> {
         if(x) {
           this.weight = x;
-          this.Bmi = x["Weight"] / (177/100 * 177/100)
+          this.height = 177;
+          let heightMultiplier = this.height / 100;
+          if(!this.height)
+          {
+            this.Bmi = 'Enter Height from Profile to Calculate BMI';
+          }
+          if(!this.weight || !this.weight.Weight || this.weight.Weight === 0)
+          {
+            this.Bmi = 'Enter Weight to Calculate BMI';
+          }
+          else
+          {
+            this.Bmi = this.weight.Weight / (heightMultiplier * heightMultiplier);
+          }
         }
       }
     )
@@ -80,7 +93,18 @@ export class BmiComponent implements OnInit {
     this.userDetailService.getDetails(this.userId).subscribe(x => {
       this.height = 177;
       let heightMultiplier = this.height / 100;
-      this.Bmi = this.weight.Weight / (heightMultiplier * heightMultiplier);
+      if(!this.height)
+      {
+        this.Bmi = 'Enter Height from Profile to Calculate BMI';
+      }
+      if(!this.weight || !this.weight.Weight || this.weight.Weight === 0)
+      {
+        this.Bmi = 'Enter Weight to Calculate BMI';
+      }
+      else
+      {
+        this.Bmi = this.weight.Weight / (heightMultiplier * heightMultiplier);
+      }
     })
   }
 }

@@ -18,7 +18,7 @@ import { Weight } from '../../_models/Weight';
 @Injectable()
 export class WeightService {
 
-  private backendUrl = 'http://127.0.0.1:5000/api/user/';
+  private backendUrl = 'http://ht.cantuksavul.com:5000/api/user/';
   private weightApiUrl = '/weight/';
   constructor (private http: Http) {}
 
