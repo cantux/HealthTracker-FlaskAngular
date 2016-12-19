@@ -28,8 +28,6 @@ sudo apt-get install libmysqlclient-dev
 
 ## Frontend App Preperation
 
-## Install NodeJS
-
 [Install NodeJS Following the Docs](https://nodejs.org/en/download/package-manager/)
 
 !!Make sure to give read write exection rights to the globally installed packages folder.
