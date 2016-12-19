@@ -1,5 +1,5 @@
 # Fall2016Swe573cant
-See docs folder for Software Requirements Specification and Design Specification Documnet
+See docs folder for Project Management Exceprts, Software Requirements Specification and Design Specification Documnet
 
 [It's alive at EC2](http://ht.cantuksavul.com:8000/)
 
