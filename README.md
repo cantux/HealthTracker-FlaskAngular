@@ -1,7 +1,7 @@
 # Fall2016Swe573cant
-repo for tracking course work
+See docs folder for Software Requirements Specification and Design Specification Documnet
 
-[It's alive at EC2](http://ec2-35-156-178-210.eu-central-1.compute.amazonaws.com:8000/)
+[It's alive at EC2](http://ht.cantuksavul.com:8000/)
 
 [Piazza Link](https://piazza.com/boun.edu.tr/fall2016/swe573/home)
 
