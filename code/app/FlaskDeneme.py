@@ -406,12 +406,13 @@ class Weight(db.Model):
 
 
 if __name__ == '__main__':
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     first_user = User(Email="email", Password="pass")
     db.session.add(first_user)
     db.session.commit()
 
-    app.run()
+    app.run(host="0.0.0.0")
     # app.run(debug=True, host="0.0.0.0")
 
 
