@@ -1,7 +1,7 @@
 # Fall2016Swe573cant
 See docs folder for Project Management Exceprts, Software Requirements Specification and Design Specification Documnet
 
-[It's alive at EC2](http://ht.cantuksavul.com:8000/)
+[It's alive at EC2](http://ht.cantuksavul.com)
 
 [Piazza Link](https://piazza.com/boun.edu.tr/fall2016/swe573/home)
 
