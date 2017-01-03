@@ -7,7 +7,7 @@ See docs folder for Project Management Exceprts, Software Requirements Specifica
 
 # Checkout Introduction Video
 
-[![Demo CountPages alpha](https://gifs.com/gif/health-tracker-sample-usage-oYn6mX)](https://www.youtube.com/watch?v=wqgXcJUfd_g)
+[![Click to open youtube](https://j.gifs.com/oYn6mX.gif)](https://www.youtube.com/watch?v=wqgXcJUfd_g)
 
 # Prerequisites
 
