@@ -9,7 +9,7 @@ See docs folder for Project Management Exceprts, Software Requirements Specifica
 
 [![Click to open youtube](https://j.gifs.com/oYn6mX.gif)](https://www.youtube.com/watch?v=wqgXcJUfd_g)
 
-# Prerequisites
+# Installation Prerequisites
 
 Install mysql-server mysql-client
 
