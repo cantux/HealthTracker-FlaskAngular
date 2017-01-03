@@ -5,6 +5,10 @@ See docs folder for Project Management Exceprts, Software Requirements Specifica
 
 [Piazza Link](https://piazza.com/boun.edu.tr/fall2016/swe573/home)
 
+# Checkout Introduction Video
+
+[![Demo CountPages alpha](https://gifs.com/gif/health-tracker-sample-usage-oYn6mX)](https://www.youtube.com/watch?v=wqgXcJUfd_g)
+
 # Prerequisites
 
 Install mysql-server mysql-client
