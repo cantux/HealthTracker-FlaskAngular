@@ -17,7 +17,7 @@ import { UserDetail } from '../_models/UserDetail';
 @Injectable()
 export class UserDetailService {
 
-  private backendUrl = 'http://ht.cantuksavul.com:5000/api/user/';
+  private backendUrl = 'http://localhost:5000/api/user/';
 
   constructor (private http: Http) {}
 

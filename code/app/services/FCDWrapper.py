@@ -3,7 +3,7 @@ import requests
 
 class FCD(object):
     FORMAT = "json"
-    API_KEY = "N4ZFGssGZVgxc8ZtBOp11B1pRPkXj57IsvKcGpvL"
+    API_KEY = "DEMO_KEY"# "1geJuCiAh6ygOqCYhSCMckVBtoY6a4GVGNFH9F1n"
     API_URL = "http://api.nal.usda.gov/ndb/{}/?format={}&api_key={}"
 
     def __init__(self):
@@ -76,14 +76,6 @@ class FCD(object):
         for m in nutrients[0]["measures"]:
             measures.append(m)
         return measures
-    #
-    # @staticmethod
-    # def fill_measures(nutrients):
-    #     measures = []
-    #     for n in nutrients:
-    #         for m in n["measures"]:
-    #             measures.append(m)
-    #     return measures
 
     @staticmethod
     def filter_sum_nutrients(nutrients, label, unit):

@@ -47,11 +47,11 @@ import * as primeUITheme from 'primeui/themes/bootstrap/theme.css'
     <main>
       <router-outlet></router-outlet>
     </main>
-    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
+    <!--<pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>-->
 
-    <footer>
-      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
-    </footer>
+    <!--<footer>-->
+      <!--<span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>-->
+    <!--</footer>-->
   `
 })
 export class AppComponent {

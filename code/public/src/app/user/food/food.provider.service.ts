@@ -19,10 +19,10 @@ import { Food } from '../../_models/Food';
 @Injectable()
 export class FoodProviderService {
 
-  private measuresBackendUrl = 'http://ht.cantuksavul.com:5000/api/food/';
+  private measuresBackendUrl = 'http://localhost:5000/api/food/';
   private measuresUrl = '/measures';
 
-  private foodBackendUrl = 'http://ht.cantuksavul.com:5000/api/user/';
+  private foodBackendUrl = 'http://localhost:5000/api/user/';
   private getSelectedDateFoodUrl = '/food/'
 
   constructor (private http: Http) {}

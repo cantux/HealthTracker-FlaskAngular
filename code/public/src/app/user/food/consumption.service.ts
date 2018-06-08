@@ -21,7 +21,7 @@ import { Food } from '../../_models/Food';
 @Injectable()
 export class ConsumptionService {
 
-  private backendUrl = 'http://ht.cantuksavul.com:5000/api/user/';
+  private backendUrl = 'http://localhost:5000/api/user/';
 
   private foodUrl = '/food/new';
 
