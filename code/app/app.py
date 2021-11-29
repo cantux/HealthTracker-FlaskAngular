@@ -24,7 +24,7 @@ def create_app(cfg=None):
     CORS(app)  #enables cross origin resource sharing
 
     if cfg is None:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:SAC63PEK@localhost:3306/deneme2'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:-------@localhost:3306/deneme2'
     db.init_app(app)
     # app.after_request(sql_debug)
     with app.app_context():
